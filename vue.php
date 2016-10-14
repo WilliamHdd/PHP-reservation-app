@@ -16,7 +16,7 @@
       <h1>Détails de réservation:</h1>
       <p> Voyage vers <?php echo $_session["destination"],":"; ?> </p>
       <?php
-      if(isset($_session['assurance']))
+      if(isset($_session['insurance']))
       {
         echo "Avec assurance annulation.<br><br>";
       }
@@ -44,7 +44,7 @@
         <p> Age: <input name = "age" type="text" placeholder="Age" /></p>
         <?php
         $travellor = $_session['travellor'];//doesn't work
-        $age = $_sessions['age'];//doesn't work
+        $age = $_session['age'];//doesn't work
         // Adding to $people the travellor's id and age
         $people[$travellor] = $age;//doesn't work
          ?>

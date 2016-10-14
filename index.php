@@ -14,23 +14,45 @@
     <body>
       <div class="container">
 
-        <h1>Réservation</h1>
+          <div class="row">
 
-        <p>  Prix des places: </p>
-        <p> Moins de 12 ans = 10€ </p>
-        <p> Plus de 12 ans = 15€ </p>
-        <p> Assurance reservation = 20 € peu important le nombre de voyageurs. </p>
+              <h1>Réservation</h1>
 
-        <form method="post" action="reservation_step_1.php">
-          <p> Destination: <input type="text" placeholder="Destination" name = "destination"/> </p>
+              <p>
+                  Prix des places:
+                  <ul>
+                      <li>Moins de 12 ans = 10€</li>
+                      <li>Plus de 12 ans = 15€</li>
+                  </ul>
+                  Assurance reservation = 20 € peu importe le nombre de voyageurs.
+              </p>
 
-          <p> Nombre de places:<input type="number" name="places"/> </p>
-          <p> Assurance annulation? <input type="checkbox" value="valeur" name="assurance"/> </p>
+              <form method="post" action="reservation_step_1.php" class="container">
+                  <div class="form-group row">
+                      <label for="destination">Destination</label>
+                      <input type="text" id="destination" name="destination" placeholder="Destination" class="form-control" />
+                  </div>
 
-          <button type="submit" class="btn btn-primary btn-lg" name = "Submit">Suivant</button>
-          <button name="destroy" class="btn btn-default btn-lg">Annulation</button>
-        </form>
+                  <div class="form-group row">
+                      <label for="places">Nombre de places</label>
+                      <input type="number" id="places" name="places" class="form-control" />
+                  </div>
 
+                  <div class="form-check row">
+                      <label for="places" class="form-check-label">
+                          <input type="checkbox" id="insurance" name="insurance" value="valeur" class="form-check-input" />
+                          Cancellation Insurance
+                      </label>
+                  </div>
+
+                  <div class="row">
+                      <button type="submit" class="btn btn-primary" name = "Submit">Suivant</button>
+                      <button name="destroy" class="btn btn-default">Annulation</button>
+                  </div>
+
+              </form>
+
+          </div>
 
       </div>
 

@@ -11,7 +11,7 @@ if (isset($_POST['Submit']))
       //raise error
       echo 'problem places empty';
     }
-  
+
     elseif ($_POST['places'] <= 0)
     {
       //raise error
@@ -21,7 +21,7 @@ if (isset($_POST['Submit']))
     {
       $_session['destination'] = $_POST['destination'];
       $_session['places'] = filter_var($_POST['places'], FILTER_VALIDATE_INT);
-      $_session['assurance'] = $_POST['assurance'];
+      $_session['insurance'] = $_POST['insurance'];
       include("vue.php");
     }
 
