@@ -1,0 +1,15 @@
+{
+  "name": "php-reservation-app",
+  "version": "1.0.0",
+  "description": "School assignment in PHP",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/azerupi/PHP-reservation-app.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "bootstrap": "^4.0.0-alpha.4",
+    "jquery": "3.1.1"
+  }
+}
