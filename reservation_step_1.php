@@ -1,13 +1,30 @@
 <?php
 if (isset($_POST['Submit']))
   {
-    $_session['destination'] = $_POST['destination'];
-    $_session['places'] = filter_var($_POST['places'], FILTER_VALIDATE_INT);
-    $_session['assurance'] = $_POST['assurance'];
-    //ini_set('display_errors', 1);
-    //ini_set('display_startup_errors', 1);
-    //error_reporting(E_ALL);
-    include("vue.php");
+    if(empty($_POST['destination']))
+    {
+      //raise error
+      echo "problem destination empty";
+    }
+    elseif (empty($_POST['places']))
+    {
+      //raise error
+      echo 'problem places empty';
+    }
+  
+    elseif ($_POST['places'] <= 0)
+    {
+      //raise error
+      echo"error negative place";
+    }
+    else
+    {
+      $_session['destination'] = $_POST['destination'];
+      $_session['places'] = filter_var($_POST['places'], FILTER_VALIDATE_INT);
+      $_session['assurance'] = $_POST['assurance'];
+      include("vue.php");
+    }
+
   }
   elseif (isset($_POST['destroy']))
   {
