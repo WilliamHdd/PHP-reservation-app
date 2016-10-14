@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<?php session_start(); ?>
 <html>
     <head>
         <meta charset="utf-8">
@@ -11,6 +12,8 @@
         <script src="node_modules/jquery/dist/jquery.min.js" charset="utf-8"></script>
     </head>
     <body>
+      <div class="container">
+
         <h1>Réservation</h1>
 
         <p>  Prix des places: </p>
@@ -18,15 +21,21 @@
         <p> Plus de 12 ans = 15€ </p>
         <p> Assurance reservation = 20 € peu important le nombre de voyageurs. </p>
 
+        <form method="post" action="reservation_step_1.php">
+          <p> Destination: <input type="text" placeholder="Destination" name = "destination"/> </p>
 
-        <article>
-          <p> Destination: <input type="text" value="Destination" /> </p>
-          <p> Nombre de places:<input type="number" /> </p>
-          <p> Assurance annulation? <input type="checkbox" value="valeur" /> </p>
-        </article>
-        <input type="button" value="Etape suivante" /><input type="button" value="Annulation" />
+          <p> Nombre de places:<input type="number" name="places"/> </p>
+          <p> Assurance annulation? <input type="checkbox" value="valeur" name="assurance"/> </p>
+
+          <button type="submit" class="btn btn-primary btn-lg" name = "Submit">Suivant</button>
+          <button name="destroy" class="btn btn-default btn-lg">Annulation</button>
+        </form>
+
+
+      </div>
 
         <script src="node_modules/bootstrap/dist/js/bootstrap.min.js" charset="utf-8"></script>
         <script src="node_modules/tether/dist/js/tether.min.js" charset="utf-8"></script>
     </body>
+
 </html>
