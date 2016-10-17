@@ -4,18 +4,42 @@ if (isset($_POST['Submit']))
     if(empty($_POST['destination']))
     {
       //raise error
-      echo "problem destination empty";
+      ?>
+      <SCRIPT LANGUAGE = "JavaScript">
+        {
+          alert('Veuillez indiquer une destination.')
+        }
+      </SCRIPT>
+
+
+      <?php
+      include("index.php");
     }
     elseif (empty($_POST['places']))
     {
       //raise error
-      echo 'problem places empty';
+      ?>
+      <SCRIPT LANGUAGE = "JavaScript">
+        {
+          alert('Minimum un voyageur requis.')
+        }
+      </SCRIPT>
+
+      <?php
+      include("index.php");
     }
 
     elseif ($_POST['places'] <= 0)
     {
       //raise error
-      echo"error negative place";
+      ?>
+      <SCRIPT LANGUAGE = "JavaScript">
+        {
+          alert('Veuillez entrez un nombre positifs de voyageurs. ')
+        }
+      </SCRIPT>
+      <?php
+      include("index.php");
     }
     else
     {
