@@ -5,11 +5,11 @@ if (isset($_POST['Submit']))
     {
       //raise error
       ?>
-      <SCRIPT LANGUAGE = "JavaScript">
+      <script >
         {
           alert('Veuillez indiquer une destination.')
         }
-      </SCRIPT>
+      </script>
 
 
       <?php
@@ -19,11 +19,11 @@ if (isset($_POST['Submit']))
     {
       //raise error
       ?>
-      <SCRIPT LANGUAGE = "JavaScript">
+        <script >
         {
           alert('Minimum un voyageur requis.')
         }
-      </SCRIPT>
+        </script >
 
       <?php
       include("index.php");
@@ -33,11 +33,11 @@ if (isset($_POST['Submit']))
     {
       //raise error
       ?>
-      <SCRIPT LANGUAGE = "JavaScript">
+        <script >
         {
           alert('Veuillez entrez un nombre positifs de voyageurs. ')
         }
-      </SCRIPT>
+        </script >
       <?php
       include("index.php");
     }
