@@ -39,7 +39,7 @@
                   </div>
 
                   <div class="form-check row">
-                      <label for="places" class="form-check-label">
+                      <label class="form-check-label">
                           <input type="checkbox" id="insurance" name="insurance" value="valeur" class="form-check-input" />
                           Cancellation Insurance
                       </label>
@@ -56,8 +56,8 @@
 
       </div>
 
-        <script src="node_modules/bootstrap/dist/js/bootstrap.min.js" charset="utf-8"></script>
         <script src="node_modules/tether/dist/js/tether.min.js" charset="utf-8"></script>
+        <script src="node_modules/bootstrap/dist/js/bootstrap.min.js" charset="utf-8"></script>
     </body>
 
 </html>
