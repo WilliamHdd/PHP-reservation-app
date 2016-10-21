@@ -12,7 +12,7 @@
 </head>
 <body>
   <h1> Toute l'équipe vous remercie de votre réservation!</h1>
-  <p> À bientot!<p>
+  <p> À bientot!</p>
   <form method="post" action="index.php">
   <button name="destroy_3" class="btn btn-primary btn-lg">Y'a pas de quoi.</button>
   </form>
