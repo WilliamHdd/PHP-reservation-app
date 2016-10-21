@@ -3,7 +3,7 @@
     // - the opening html tags
     // - <head> tags with the necessary style and javascript includes
     // - opening body tag and a bootstrap "container" div
-    include("partials/header.php");
+    include 'partials/header.php';
 ?>
 
 <div class="row">
@@ -19,7 +19,7 @@
         Assurance reservation = 20 € peu importe le nombre de voyageurs.
     </p>
 
-    <form method="post" action="reservation_step_1.php" class="container">
+    <form method="post" action="index.php" class="container">
         <div class="form-group row">
             <label for="destination">Destination</label>
             <input type="text" id="destination" name="destination" placeholder="Destination" class="form-control" />
@@ -50,5 +50,5 @@
     // Include the footer file that contains
     // - javascript includes
     // - all closing tags corresponding to the opening tags in the header
-    include("partials/footer.php");
+    include 'partials/footer.php';
 ?>

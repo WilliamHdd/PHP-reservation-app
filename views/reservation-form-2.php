@@ -12,7 +12,7 @@
       }
 
       ?>
-      <form method="post" action="step_2.php">
+      <form method="post" action="index.php">
       <?php
       //creating a dictionnary people
       $people = array(); //doesn't work
