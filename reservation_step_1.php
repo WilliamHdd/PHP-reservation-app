@@ -22,7 +22,7 @@ if (isset($_POST['Submit']))
       $_session['destination'] = $_POST['destination'];
       $_session['places'] = filter_var($_POST['places'], FILTER_VALIDATE_INT);
       $_session['insurance'] = $_POST['insurance'];
-      include("vue.php");
+      include("reservation-form-2.php");
     }
 
   }
