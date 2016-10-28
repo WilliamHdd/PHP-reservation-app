@@ -38,7 +38,7 @@
         </div>
 
         <div class="row">
-            <button type="submit" class="btn btn-primary" name = "Submit">Suivant</button>
+            <button type="submit" class="btn btn-primary" name="step_1">Suivant</button>
             <button name="destroy" class="btn btn-default">Annulation</button>
         </div>
 
