@@ -9,9 +9,12 @@ class App
 
     public function handle()
     {
+        include_once 'models/reservation.php';
+        include_once 'models/passenger.php';
+
         if (isset($_POST['step_1'])) {
             $this->step_1();
-        } elseif (isset($_POST['step_2'])) {
+        } elseif (isset($_POST['step_2'], $_SESSION['trip'])) {
             $this->step_2();
         } elseif (isset($_POST['destroy']) || isset($_POST['destroy_2'])) {
             $this->cancel();
@@ -54,13 +57,12 @@ class App
           <?php
           include 'index.php';
         } else {
-            include 'models/reservation.php';
+            $trip = new Reservation();
 
             $target = $_POST['destination'];
             $places = filter_var($_POST['places'], FILTER_VALIDATE_INT);
-            $insurance = $_POST['insurance'];
+            $insurance = isset($_POST['insurance']) ? $_POST['insurance'] : false;
 
-            $trip = new Reservation();
             $trip->set_destination($target);
             $trip->set_n_passengers($places);
             $trip->set_cancellation_insurance($insurance);
@@ -73,16 +75,15 @@ class App
 
     private function step_2()
     {
-        $travellor = $_POST['travellor'];
-        $age = $_POST['age'];
-
-        include 'models/passenger.php';
-        include 'models/reservation.php';
-
-        $person = new passenger($travellor, $age);
+        $travellers = $_POST['traveller'];
+        $ages = $_POST['age'];
 
         $trip = unserialize($_SESSION['trip']);
-        $trip->add_passenger($person);
+
+        foreach ($travellers as $i => $traveller) {
+            $trip->add_passenger(new passenger($traveller, $ages[$i]));
+        }
+
         $passengers = $trip->get_passengers();
         $_SESSION['trip'] = serialize($trip);
         include 'views/reservation-form-validated.php';

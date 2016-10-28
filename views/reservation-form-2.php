@@ -3,9 +3,9 @@
  ?>
     <body>
       <h1>Détails de réservation:</h1>
-      <p> Voyage vers <?php echo $_SESSION['destination'],':'; ?> </p>
+      <p> Voyage vers <?php echo $trip->get_destination().':'; ?> </p>
       <?php
-      if (isset($_SESSION['insurance'])) {
+      if ($trip->has_insurance()) {
           echo 'Avec assurance annulation.<br><br>';
       } else {
           echo 'Sans assurance annulation.<br><br>';
@@ -18,19 +18,10 @@
       $people = array(); //doesn't work
 
       for ($i = 1; $i < (int) $_POST['places'] + 1; ++$i) {
-          echo 'Voyageur ', $i;
-        //ini_set('display_errors', 1);
-        //ini_set('display_startup_errors', 1);
-        //error_reporting(E_ALL);
-        ?>
-
-        <p> Nom: <input name = "traveller" type="text" placeholder="Voyageur " /></p>
-
-        <p> Age: <input name = "age" type="text" placeholder="Age" /></p>
-        <?php
-
-          ?>
-      <?php
+          echo 'Voyageur ', $i; ?>
+          <p> Nom: <input name="traveller[]" type="text" placeholder="Voyageur" /></p>
+          <p> Age: <input name="age[]" type="text" placeholder="Age" /></p>
+          <?php
 
       } ?>
 

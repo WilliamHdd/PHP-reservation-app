@@ -4,7 +4,7 @@ include_once 'passenger.php';
 
 class Reservation
 {
-    private $_destination;
+    private $destination;
     private $n_passengers = 0;
     private $cancellation_insurance = false;
     private $passengers = array();
@@ -12,6 +12,11 @@ class Reservation
     public function set_destination($dest)
     {
         $this->destination = $dest;
+    }
+
+    public function get_destination()
+    {
+        return $this->destination;
     }
 
     public function set_n_passengers($n)
@@ -22,6 +27,11 @@ class Reservation
     public function set_cancellation_insurance($insurance)
     {
         $this->cancellation_insurance = $insurance;
+    }
+
+    public function has_insurance()
+    {
+        return $this->cancellation_insurance;
     }
 
     public function add_passenger($passenger)
