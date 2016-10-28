@@ -54,15 +54,32 @@ class App
           <?php
           include 'index.php';
         } else {
-            $_session['destination'] = $_POST['destination'];
-            $_session['places'] = filter_var($_POST['places'], FILTER_VALIDATE_INT);
-            $_session['insurance'] = $_POST['insurance'];
+            include 'models/reservation.php';
+
+            $target = $_POST['destination'];
+            $places = filter_var($_POST['places'], FILTER_VALIDATE_INT);
+            $insurance = $_POST['insurance'];
+            $trip = new Reservation($target, $places, $insurance);
+            $_SESSION['trip'] = serialize($trip);
+
             include 'views/reservation-form-2.php';
         }
     }
 
     private function step_2()
     {
+        $travellor = $_POST['travellor'];
+        $age = $_POST['age'];
+
+        include 'models/passenger.php';
+        include 'models/reservation.php';
+
+        $person = new passenger($travellor, $age);
+
+        $trip = unserialize($_SESSION['trip']);
+        $trip->add_passenger($person);
+        $passengers = $trip->get_passengers();
+        $_SESSION['trip'] = serialize($trip);
         include 'views/reservation-form-validated.php';
     }
 
