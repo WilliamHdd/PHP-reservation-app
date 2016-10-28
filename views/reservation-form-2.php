@@ -24,7 +24,7 @@
         //error_reporting(E_ALL);
         ?>
 
-        <p> Nom: <input name = "travellor" type="text" placeholder="Voyageur " /></p>
+        <p> Nom: <input name = "traveller" type="text" placeholder="Voyageur " /></p>
 
         <p> Age: <input name = "age" type="text" placeholder="Age" /></p>
         <?php

@@ -9,11 +9,19 @@ class Reservation
     private $cancellation_insurance = false;
     private $passengers = array();
 
-    public function __construct($dest, $n_p, $c_i)
+    public function set_destination($dest)
     {
-        $this->$destination = $dest;
-        $this->$n_passengers = $n_p;
-        $this->$cancellation_insurance = $c_i;
+        $this->destination = $dest;
+    }
+
+    public function set_n_passengers($n)
+    {
+        $this->n_passengers = $n;
+    }
+
+    public function set_cancellation_insurance($insurance)
+    {
+        $this->cancellation_insurance = $insurance;
     }
 
     public function add_passenger($passenger)
