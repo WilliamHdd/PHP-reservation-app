@@ -47,4 +47,16 @@ class Reservation
     {
         return $this->passengers;
     }
+    public function show_dest()
+    {
+        return $this->destination;
+    }
+    public function case_insurance()
+    {
+        if ($this->cancellation_insurance == true) {
+            return 'avec';
+        } else {
+            return 'sans';
+        }
+    }
 }
