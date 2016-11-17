@@ -83,7 +83,8 @@ class App
         foreach ($travellers as $i => $traveller) {
             $trip->add_passenger(new passenger($traveller, $ages[$i]));
         }
-
+        $destination = $trip->show_dest();
+        $insurance = $trip->case_insurance();
         $passengers = $trip->get_passengers();
         $_SESSION['trip'] = serialize($trip);
         include 'views/reservation-form-validated.php';
