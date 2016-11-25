@@ -16,6 +16,7 @@
       foreach ($passengers as $i => $passenger) {
           echo $passenger->name.' '.$passenger->age.'ans'.'<br>';
       }
+      echo $result;
   ?>
 
 <form method="post" action="index.php">

@@ -2,9 +2,15 @@
 
 class App
 {
+    private $mysqli;
+
     public function __construct()
     {
-        // code...
+        $this->mysqli = new mysqli('localhost', 'user', 'password', 'avengers') or die('Could not select database');
+
+        if ($this->mysqli->connect_errno) {
+            echo 'Echec lors de la connexion à MySQLi : ('.$this->mysqli->connect_errno.') '.$this->mysqli->connect_error;
+        }
     }
 
     public function handle()
@@ -68,6 +74,15 @@ class App
             $trip->set_cancellation_insurance($insurance);
 
             $_SESSION['trip'] = serialize($trip);
+// needs to be cleaned 
+            $sql = "INSERT INTO 'avengers'.'user' ('id', 'destination', 'people', 'number_of_passenger', 'Cancel_Insurance')
+                      VALUES (NULL, "$trip->get_destination()", NULL, "$trip->get_n_passengers()", "$trip->getinsurance");";
+            if ($this->mysqli->query($sql) === true) {
+                echo 'Record updated successfully';
+                $id_insert = $this->mysqli->insert_id;
+            } else {
+                echo 'Error inserting record: '.$this->mysqli->error;
+            }
 
             include 'views/reservation-form-2.php';
         }
@@ -87,6 +102,13 @@ class App
         $insurance = $trip->case_insurance();
         $passengers = $trip->get_passengers();
         $_SESSION['trip'] = serialize($trip);
+        $query = 'SELECT * FROM users';
+        $result = $this->mysqli->query($query) or die('Query failed ');
+        if ($result->num_rows == 0) {
+            echo 'Aucune ligne trouvée, rien à afficher.';
+            exit;
+        }
+
         include 'views/reservation-form-validated.php';
     }
 
