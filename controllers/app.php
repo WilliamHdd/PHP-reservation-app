@@ -74,18 +74,16 @@ class App
             $trip->set_cancellation_insurance($insurance);
             $euromut = $trip->case_insurance();
 
-            $_SESSION['trip'] = serialize($trip);
-            $id_voyage = $this->mysqli->query('SELECT LAST_INSERT_ID() INTO @avengers.avengers') + 1;
-            echo $id_voyage;
-
-            $sql = "INSERT INTO avengers.avengers (id, endroit, people, Cancel_Insurance)
-           VALUES ('$id_voyage', '$target', '', '$euromut')";
+            $sql = "INSERT INTO avengers.avengers (endroit, Cancel_Insurance)
+           VALUES ('$target', '$euromut')";
             if ($this->mysqli->query($sql) == true) {
-                echo 'Record updated successfully';
+                //  echo 'Record updated successfully';
                 $id_insert = $this->mysqli->insert_id;
+                $trip->set_id_travel($id_insert);
             } else {
                 echo 'Error inserting record: '.$this->mysqli->error;
             }
+            $_SESSION['trip'] = serialize($trip);
 
             include 'views/reservation-form-2.php';
         }
@@ -95,18 +93,19 @@ class App
     {
         $travellers = $_POST['traveller'];
         $ages = $_POST['age'];
-
         $trip = unserialize($_SESSION['trip']);
+        $id_travel = $trip->get_id_travel();
 
         foreach ($travellers as $i => $traveller) {
             $trip->add_passenger(new passenger($traveller, $ages[$i]));
+
             $age = $ages[$i];
-            $place = $trip->show_dest();
-            $id_voyeger = $this->mysqli->query('SELECT LAST_INSERT_ID() INTO @avengers.peoples') + 1;
-            $voyager = "INSERT INTO avengers.peoples(id, name, age, voyages)
-            VALUES('$i', '$traveller', '$age', '$place')";
+            $id_travel = $trip->get_id_travel();
+            $voyager = "INSERT INTO avengers.peoples( name, age, voyage)
+            VALUES( '$traveller', '$age', '$id_travel')";
+
             if ($this->mysqli->query($voyager) == true) {
-                echo 'Record updated successfully';
+                //echo 'Record updated successfully';
                 $id_insert = $this->mysqli->insert_id;
             } else {
                 echo 'Error inserting record: '.$this->mysqli->error;
@@ -115,13 +114,8 @@ class App
         $destination = $trip->show_dest();
         $insurance = $trip->case_insurance();
         $passengers = $trip->get_passengers();
+        $id_dest = $trip->get_id_travel();
         $_SESSION['trip'] = serialize($trip);
-        $query = 'SELECT * FROM users';
-        $result = $this->mysqli->query($query) or die('Query failed ');
-        if ($result->num_rows == 0) {
-            echo 'Aucune ligne trouvée, rien à afficher.';
-            exit;
-        }
 
         include 'views/reservation-form-validated.php';
     }

@@ -12,11 +12,12 @@
   <?php
 
       echo 'Votre réservation pour '.$destination.' a bien été enregistrée '.$insurance.' assurance annulation.'.'<br>'.'<br>';
+      echo 'Votre numéros de réservation est le '.$id_dest.'<br>';
       echo 'Passagers:'.'<br>'.'<br>';
+
       foreach ($passengers as $i => $passenger) {
           echo $passenger->name.' '.$passenger->age.'ans'.'<br>';
       }
-      echo $result;
   ?>
 
 <form method="post" action="index.php">

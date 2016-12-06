@@ -8,12 +8,22 @@ class Reservation
     private $n_passengers = 0;
     private $cancellation_insurance = false;
     private $passengers = array();
+    private $id_travel = 0;
 
     public function set_destination($dest)
     {
         $this->destination = $dest;
     }
 
+    public function set_id_travel($id)
+    {
+        $this->id_travel = $id;
+    }
+
+    public function get_id_travel()
+    {
+        return $this->id_travel;
+    }
     public function get_destination()
     {
         return $this->destination;
