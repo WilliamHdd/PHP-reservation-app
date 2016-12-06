@@ -72,12 +72,15 @@ class App
             $trip->set_destination($target);
             $trip->set_n_passengers($places);
             $trip->set_cancellation_insurance($insurance);
+            $euromut = $trip->case_insurance();
 
             $_SESSION['trip'] = serialize($trip);
-// needs to be cleaned 
-            $sql = "INSERT INTO 'avengers'.'user' ('id', 'destination', 'people', 'number_of_passenger', 'Cancel_Insurance')
-                      VALUES (NULL, "$trip->get_destination()", NULL, "$trip->get_n_passengers()", "$trip->getinsurance");";
-            if ($this->mysqli->query($sql) === true) {
+            $id_voyage = $this->mysqli->query('SELECT LAST_INSERT_ID() INTO @avengers.avengers') + 1;
+            echo $id_voyage;
+
+            $sql = "INSERT INTO avengers.avengers (id, endroit, people, Cancel_Insurance)
+           VALUES ('$id_voyage', '$target', '', '$euromut')";
+            if ($this->mysqli->query($sql) == true) {
                 echo 'Record updated successfully';
                 $id_insert = $this->mysqli->insert_id;
             } else {
@@ -97,6 +100,17 @@ class App
 
         foreach ($travellers as $i => $traveller) {
             $trip->add_passenger(new passenger($traveller, $ages[$i]));
+            $age = $ages[$i];
+            $place = $trip->show_dest();
+            $id_voyeger = $this->mysqli->query('SELECT LAST_INSERT_ID() INTO @avengers.peoples') + 1;
+            $voyager = "INSERT INTO avengers.peoples(id, name, age, voyages)
+            VALUES('$i', '$traveller', '$age', '$place')";
+            if ($this->mysqli->query($voyager) == true) {
+                echo 'Record updated successfully';
+                $id_insert = $this->mysqli->insert_id;
+            } else {
+                echo 'Error inserting record: '.$this->mysqli->error;
+            }
         }
         $destination = $trip->show_dest();
         $insurance = $trip->case_insurance();
