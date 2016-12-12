@@ -8,6 +8,8 @@ class Reservation
     private $n_passengers = 0;
     private $cancellation_insurance = false;
     private $passengers = array();
+    private $id_travel = 0;
+    private $mysqli;
 
     public function set_destination($dest)
     {
@@ -57,6 +59,37 @@ class Reservation
             return 'avec';
         } else {
             return 'sans';
+        }
+    }
+    public function get_id_travel()
+    {
+        return $this->id_travel;
+    }
+    public function save()
+    {
+        $this->mysqli = new mysqli('localhost', 'user', 'password', 'avengers') or die('Could not select database');
+
+        if ($this->mysqli->connect_errno) {
+            echo 'Echec lors de la connexion à MySQLi : ('.$this->mysqli->connect_errno.') '.$this->mysqli->connect_error;
+        }
+
+        $sqlReserv = "INSERT INTO avengers.avengers(endroit, Cancel_Insurance)
+        VALUES('$this->destination','$this->cancellation_insurance')";
+        if ($this->mysqli->query($sqlReserv) == true) {
+            //  echo 'Record updated successfully';
+            $id_insert = $this->mysqli->insert_id;
+            $this->id_travel = $id_insert;
+        } else {
+            echo 'Error inserting record: '.$this->mysqli->error;
+        }
+        foreach ($this->passengers as $i => $passenger) {
+            $sqlPerson = "INSERT INTO avengers.peoples(name, age, voyage)
+            VALUES('$passenger->name','$passenger->age','$id_insert')";
+            if ($this->mysqli->query($sqlPerson) == true) {
+                //echo 'Record updated successfully';
+            } else {
+                echo 'Error inserting record: '.$this->mysqli->error;
+            }
         }
     }
 }

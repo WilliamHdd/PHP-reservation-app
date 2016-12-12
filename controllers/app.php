@@ -2,11 +2,6 @@
 
 class App
 {
-    public function __construct()
-    {
-        // code...
-    }
-
     public function handle()
     {
         include_once 'models/reservation.php';
@@ -66,6 +61,7 @@ class App
             $trip->set_destination($target);
             $trip->set_n_passengers($places);
             $trip->set_cancellation_insurance($insurance);
+            $euromut = $trip->case_insurance();
 
             $_SESSION['trip'] = serialize($trip);
 
@@ -77,16 +73,24 @@ class App
     {
         $travellers = $_POST['traveller'];
         $ages = $_POST['age'];
-
         $trip = unserialize($_SESSION['trip']);
 
         foreach ($travellers as $i => $traveller) {
             $trip->add_passenger(new passenger($traveller, $ages[$i]));
+            $age = $ages[$i];
         }
+        $id_travel = $trip->get_id_travel();
         $destination = $trip->show_dest();
-        $insurance = $trip->case_insurance();
+        $insurance_Bool = $trip->has_insurance();
+        $insurance_T = $trip->case_insurance();
         $passengers = $trip->get_passengers();
         $_SESSION['trip'] = serialize($trip);
+        //save() sets all the detail of the reservation into our database 'avengers'
+        $trip->save();
+        /* As the id of the reservation is set in to save() routine, get_id_travel() needs
+        to be called after save(). */
+        $id_travel = $trip->get_id_travel();
+
         include 'views/reservation-form-validated.php';
     }
 
