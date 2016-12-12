@@ -53,7 +53,7 @@ class App
           </script>
 
           <?php
-          include 'index.php';
+          $this->new();
         } elseif (empty($_POST['places'])) {
             //raise error
           ?>
@@ -62,7 +62,7 @@ class App
             </script >
 
           <?php
-          include 'index.php';
+          $this->new();
         } elseif ($_POST['places'] <= 0) {
             //raise error
           ?>
@@ -70,7 +70,7 @@ class App
               alert('Veuillez entrez un nombre positifs de voyageurs. ');
             </script>
           <?php
-          include 'index.php';
+          $this->new();
         } else {
             $trip = new Reservation();
 
@@ -117,6 +117,6 @@ class App
     private function cancel()
     {
         session_destroy();
-        include 'index.php';
+        $this->home();
     }
 }
