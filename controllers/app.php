@@ -6,8 +6,11 @@ class App
     {
         include_once 'models/reservation.php';
         include_once 'models/passenger.php';
-
-        if (isset($_POST['step_1'])) {
+        if (isset($_POST['new'])) {
+            $this->new();
+        } elseif (isset($_POST['old'])) {
+            $this->old();
+        } elseif (isset($_POST['step_1'])) {
             $this->step_1();
         } elseif (isset($_POST['step_2'], $_SESSION['trip'])) {
             $this->step_2();
@@ -20,7 +23,24 @@ class App
 
     private function home()
     {
+        include 'views/reservation-form-0.php';
+    }
+    private function new()
+    {
         include 'views/reservation-form-1.php';
+    }
+    private function old()
+    {
+        $trip = new Reservation();
+        //$trip->acces_DB();
+        $reserv_ID = filter_var($_POST['reserv_ID'], FILTER_VALIDATE_INT);
+
+        $data = $trip->load_data($reserv_ID);
+        //var_dump($data);
+        $destination = $data['endroit'];
+        $assurance = $data['Cancel_Insurance'];
+
+        include 'views/reservation-back.php';
     }
 
     private function step_1()

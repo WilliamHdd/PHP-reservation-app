@@ -69,6 +69,28 @@ class Reservation
     {
         return $this->id_travel;
     }
+    public function acces_DB()
+    {
+        $this->mysqli = new mysqli('localhost', 'user', 'password', 'avengers') or die('Could not select database');
+
+        if ($this->mysqli->connect_errno) {
+            echo 'Echec lors de la connexion à MySQLi : ('.$this->mysqli->connect_errno.') '.$this->mysqli->connect_error;
+        }
+    }
+    public function load_data($id)
+    {
+        $this->mysqli = new mysqli('localhost', 'user', 'password', 'avengers') or die('Could not select database');
+
+        if ($this->mysqli->connect_errno) {
+            echo 'Echec lors de la connexion à MySQLi : ('.$this->mysqli->connect_errno.') '.$this->mysqli->connect_error;
+        }
+        $load_Reserv = "SELECT * FROM avengers.avengers WHERE id ='$id'";
+
+        $result = $this->mysqli->query($load_Reserv);
+        $array = $result->fetch_array(MYSQLI_ASSOC);
+
+        return $array;
+    }
     public function save()
     {
         $this->mysqli = new mysqli('localhost', 'user', 'password', 'avengers') or die('Could not select database');
@@ -76,7 +98,7 @@ class Reservation
         if ($this->mysqli->connect_errno) {
             echo 'Echec lors de la connexion à MySQLi : ('.$this->mysqli->connect_errno.') '.$this->mysqli->connect_error;
         }
-        var_dump($this->cancellation_insurance);
+
         $sqlReserv = "INSERT INTO avengers.avengers(endroit, Cancel_Insurance)
         VALUES('$this->destination','$this->cancellation_insurance')";
         if ($this->mysqli->query($sqlReserv) == true) {
