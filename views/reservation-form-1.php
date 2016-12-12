@@ -22,17 +22,25 @@
     <form method="post" action="index.php" class="container">
         <div class="form-group row">
             <label for="destination">Destination</label>
-            <input type="text" id="destination" name="destination" placeholder="Destination" class="form-control" />
+            <input type="text" id="destination" name="destination" placeholder="Destination" class="form-control"
+            <?php if ($trip != null) {
+    echo 'value="'.$trip->get_destination().'"';
+}?>/>
         </div>
 
         <div class="form-group row">
             <label for="places">Nombre de places</label>
-            <input type="number" id="places" name="places" class="form-control" />
+            <input type="number" min="1" id="places" name="places" class="form-control"
+            <?php if ($trip != null) {
+    echo 'value="'.$trip->get_n_passengers().'"';
+}?>/>
         </div>
 
         <div class="form-check row">
             <label class="form-check-label">
-                <input type="checkbox" id="insurance" name="insurance" value="valeur" class="form-check-input" />
+                <input type="checkbox" id="insurance" name="insurance" value="valeur" class="form-check-input" <?php if ($trip != null) {
+    echo 'checked='.$trip->has_insurance();
+}?> />
                 Cancellation Insurance
             </label>
         </div>

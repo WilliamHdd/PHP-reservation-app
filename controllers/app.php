@@ -27,6 +27,12 @@ class App
     }
     private function new()
     {
+        if (isset($_SESSION['trip'])) {
+            $trip = unserialize($_SESSION['trip']);
+        } else {
+            $trip = null;
+        }
+
         include 'views/reservation-form-1.php';
     }
     private function old()
