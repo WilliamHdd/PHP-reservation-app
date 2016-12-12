@@ -28,7 +28,11 @@ class Reservation
 
     public function set_cancellation_insurance($insurance)
     {
-        $this->cancellation_insurance = $insurance;
+        if (is_bool($insurance)) {
+            $this->cancellation_insurance = $insurance;
+        } else {
+            throw new Exception('Expected a boolean!');
+        }
     }
 
     public function has_insurance()
@@ -72,7 +76,7 @@ class Reservation
         if ($this->mysqli->connect_errno) {
             echo 'Echec lors de la connexion à MySQLi : ('.$this->mysqli->connect_errno.') '.$this->mysqli->connect_error;
         }
-
+        var_dump($this->cancellation_insurance);
         $sqlReserv = "INSERT INTO avengers.avengers(endroit, Cancel_Insurance)
         VALUES('$this->destination','$this->cancellation_insurance')";
         if ($this->mysqli->query($sqlReserv) == true) {

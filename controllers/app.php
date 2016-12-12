@@ -56,7 +56,7 @@ class App
 
             $target = $_POST['destination'];
             $places = filter_var($_POST['places'], FILTER_VALIDATE_INT);
-            $insurance = isset($_POST['insurance']) ? $_POST['insurance'] : false;
+            $insurance = isset($_POST['insurance']) ? (bool) $_POST['insurance'] : false;
 
             $trip->set_destination($target);
             $trip->set_n_passengers($places);
