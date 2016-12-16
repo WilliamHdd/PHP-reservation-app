@@ -153,6 +153,20 @@ class Reservation
             echo 'Error inserting record: '.$this->mysqli->error;
         }
     }
+    public function edit()
+    {
+        $this->mysqli = new mysqli('localhost', 'user', 'password', 'avengers') or die('Could not select database');
+
+        if ($this->mysqli->connect_errno) {
+            echo 'Echec lors de la connexion à MySQLi : ('.$this->mysqli->connect_errno.') '.$this->mysqli->connect_error;
+        }
+
+        $query = "UPDATE avengers.avengers SET `endroit` = '$this->destination' WHERE `avengers`.`id` = $this->id_travel";
+        if ($this->mysqli->query($query) == true) {
+        } else {
+            echo 'Error inserting record: '.$this->mysqli->error;
+        }
+    }
     public function save()
     {
         $this->mysqli = new mysqli('localhost', 'user', 'password', 'avengers') or die('Could not select database');

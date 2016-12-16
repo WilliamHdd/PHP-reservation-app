@@ -8,9 +8,13 @@
 <h1> Voyage vers: </h1>
 
 <?php echo 'Destination actuelle: '.$destination.'<br>'; ?>
-<div class="form-group row">
-    <input type="text" id="destination" name="destination" placeholder="Nouvelle Destination" class="form-control" />
+<form method="post" action="index.php">
+<div class="row">
+    <p> <input name="modif" type="text" placeholder="<?php echo $destination ?>" /></p>
+    <br>
+    <button type="submit" class="btn btn-default btn-lg" name="Update">Modifier la destination </button>
 </div>
+</form>
 
 <?php echo 'Votre voyage se passe actuellement '.$assurance.' assurance annulation.'.'<br>'?>
 <div class="form-check row">
@@ -30,25 +34,23 @@ foreach ($ptisCons as $i) {
 <h5> Gestion des voyageurs: </h5>
 <form method="post" action="index.php">
 <div class="row">
-    <button type="submit" class="btn btn-defalut btn-lg" name="delete">Supprimer ce voyageur: </button>
+
     <div class="form-group row">
         <input name="Delete_P" type="text" placeholder="Numéros du voyageur" />
     </div>
+    <button type="submit" class="btn btn-defalut btn-lg" name="delete">Supprimer ce voyageur: </button>
 </div>
+<br>
 </form>
 <form method="post" action="index.php">
 <div class="row">
 
-    <p> Nom: <input name="traveller" type="text" placeholder="Voyageur" /></p>
+    <p> Nom: <input name="traveller" type="text" placeholder="Nom Prénom" /></p>
     <p> Age: <input name="age" type="text" placeholder="Age" /></p>
     <button type="submit" class="btn btn-default btn-lg" name="add">Ajouter ce voyageur: </button>
-</div>
-</form>
 <br>
 <br>
-<form method="post" action="index.php">
-<div class="row">
-    <button type="submit" class="btn btn-primary btn-lg" name="Update">Mettre votre réservation à jour</button>
+    <button type="submit" class="btn btn-primary btn-lg" name="Done">Mettre votre réservation à jour</button>
 </div>
 </form>
 

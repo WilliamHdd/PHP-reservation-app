@@ -19,7 +19,7 @@
 
       for ($i = 1; $i < (int) $_POST['places'] + 1; ++$i) {
           echo 'Voyageur ', $i; ?>
-          <p> Nom: <input name="traveller[]" type="text" placeholder="Voyageur" /></p>
+          <p> Nom: <input name="traveller[]" type="text" placeholder="Nom Prénom" /></p>
           <p> Age: <input name="age[]" type="text" placeholder="Age" /></p>
           <?php
 
