@@ -6,21 +6,33 @@
     include 'partials/header.php';
 ?>
 
-<div class="row">
-<h1>Bienvenue</h1>
-<p>
-  Choisissez entre
-  <ul>
-    <form method="post" action="index.php" class="container">
-        <div class="row">
-            <button type="submit" class="btn btn-primary" name="new">Nouvelle réservation</button>
-            <div class="form-group row">
-                <label for="NumRes">Veuillez indiquer votre numéros de réservation:</label>
-                <input type="number" id="reserv_ID" name="reserv_ID" class="form-control" />
-            </div>
-            <button type="submit" name="old" class="btn btn-default" >Accéder à une réservation précédente</button>
+
+
+<div id="index-page">
+    <h1 class="row">Bienvenue</h1>
+
+    <div class="row">
+        <div class="col-md-6">
+            <form method="post" action="index.php" class="container">
+                <button id="new-reservation" type="submit" class="btn btn-primary" name="new">
+                    Nouvelle réservation
+                </button>
+            </form>
         </div>
-    </form>
-  </ul>
-</p>
+
+        <div class="col-md-6">
+            <form method="post" action="index.php" class="container">
+                <button id="old-reservations" type="submit" class="btn btn-primary" name="old">
+                    Accéder à une réservation
+                </button>
+            </form>
+        </div>
+    </div>
 </div>
+
+<?php
+    // Include the footer file that contains
+    // - javascript includes
+    // - all closing tags corresponding to the opening tags in the header
+    include 'partials/footer.php';
+?>
