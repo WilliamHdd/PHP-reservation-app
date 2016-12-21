@@ -37,7 +37,9 @@
 
       <form method="post" action="index.php">
 
+
           <div class="row">
+
           <?php
           //creating a dictionnary people
           $people = array(); //doesn't work

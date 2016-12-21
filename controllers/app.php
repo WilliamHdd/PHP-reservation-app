@@ -16,9 +16,46 @@ class App
             $this->step_2();
         } elseif (isset($_POST['destroy']) || isset($_POST['destroy_2'])) {
             $this->cancel();
+        } elseif (isset($_POST['add'])) {
+            $this->update_P();
+        } elseif (isset($_POST['delete'])) {
+            $this->delete_P();
+        } elseif (isset($_POST['Done'])) {
+            session_destroy();
+            $this->home();
+        } elseif (isset($_POST['Update'])) {
+            $this->update();
         } else {
             $this->home();
         }
+    }
+    private function update_P()
+    {
+        $trip = unserialize($_SESSION['trip']);
+
+        $traveller = $_POST['traveller'];
+        $age = $_POST['age'];
+        $reserv_ID = $trip->get_id_travel();
+        $trip->save_Passenger($traveller, $age, $reserv_ID);
+        $this->old();
+        $_SESSION['trip'] = serialize($trip);
+    }
+    private function update()
+    {
+        $trip = unserialize($_SESSION['trip']);
+
+        $new_dest = $_POST['modif'];
+        $trip->set_destination($new_dest);
+        $trip->edit();
+        $this->old();
+    }
+    private function delete_P()
+    {
+        $trip = unserialize($_SESSION['trip']);
+        $id = $_POST['Delete_P'];
+        $trip->del_Passenger($id);
+        $this->old();
+        $_SESSION['trip'] = serialize($trip);
     }
 
     private function home()
@@ -39,12 +76,20 @@ class App
     {
         $trip = new Reservation();
         //$trip->acces_DB();
-        $reserv_ID = filter_var($_POST['reserv_ID'], FILTER_VALIDATE_INT);
+        try {
+            $reserv_ID = $trip->get_id_travel();
+        } catch (UndefinedIndexError  $e) {
+            $reserv_ID = filter_var($_POST['reserv_ID'], FILTER_VALIDATE_INT);
+        }
 
         $data = $trip->load_data($reserv_ID);
-        //var_dump($data);
+        $ptisCons = $trip->load_people($reserv_ID);
         $destination = $data['endroit'];
-        $assurance = $data['Cancel_Insurance'];
+        $trip->set_destination($destination);
+        $id_trav = $data['id'];
+        $trip->set_id_travel($id_trav);
+        $assurance = $trip->insurance_to_string($data['Cancel_Insurance']);
+        $_SESSION['trip'] = serialize($trip);
 
         include 'views/reservation-back.php';
     }

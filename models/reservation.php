@@ -15,6 +15,10 @@ class Reservation
     {
         $this->destination = $dest;
     }
+    public function set_id_travel($value)
+    {
+        $this->id_travel = $value;
+    }
 
     public function get_destination()
     {
@@ -73,17 +77,17 @@ class Reservation
             return 'sans';
         }
     }
+    public function insurance_to_string($case)
+    {
+        if ($case == 1) {
+            return 'avec';
+        } else {
+            return 'sans';
+        }
+    }
     public function get_id_travel()
     {
         return $this->id_travel;
-    }
-    public function acces_DB()
-    {
-        $this->mysqli = new mysqli('localhost', 'user', 'password', 'avengers') or die('Could not select database');
-
-        if ($this->mysqli->connect_errno) {
-            echo 'Echec lors de la connexion à MySQLi : ('.$this->mysqli->connect_errno.') '.$this->mysqli->connect_error;
-        }
     }
     public function load_data($id)
     {
@@ -94,10 +98,82 @@ class Reservation
         }
         $load_Reserv = "SELECT * FROM avengers.avengers WHERE id ='$id'";
 
-        $result = $this->mysqli->query($load_Reserv);
-        $array = $result->fetch_array(MYSQLI_ASSOC);
+        $resultR = $this->mysqli->query($load_Reserv);
+
+        $array = $resultR->fetch_array(MYSQLI_ASSOC);
 
         return $array;
+    }
+    public function load_people($id)
+    {
+        $this->mysqli = new mysqli('localhost', 'user', 'password', 'avengers') or die('Could not select database');
+
+        if ($this->mysqli->connect_errno) {
+            echo 'Echec lors de la connexion à MySQLi : ('.$this->mysqli->connect_errno.') '.$this->mysqli->connect_error;
+        }
+
+        $load_People = "SELECT * FROM avengers.peoples WHERE voyage =$id";
+        $resultP = $this->mysqli->query($load_People);
+        $posts = array();
+
+        while ($row = $resultP->fetch_array()) {
+            $ID = $row['id'];
+            $name = $row['name'];
+            $age = $row['age'];
+            $voyage = $row['voyage'];
+
+            $posts [] = array(
+               'ID' => $ID,
+               'name' => $name,
+               'age' => $age,
+               'voyage' => $voyage,
+              );
+        }
+
+        return $posts;
+    }
+    public function save_Passenger($traveller, $age, $reserv_ID)
+    {
+        $this->mysqli = new mysqli('localhost', 'user', 'password', 'avengers') or die('Could not select database');
+
+        if ($this->mysqli->connect_errno) {
+            echo 'Echec lors de la connexion à MySQLi : ('.$this->mysqli->connect_errno.') '.$this->mysqli->connect_error;
+        }
+        $query = "INSERT INTO avengers.peoples(name, age, voyage)
+      VALUES('$traveller', '$age','$reserv_ID')";
+        if ($this->mysqli->query($query) == true) {
+            //  echo 'Record updated successfully';
+        } else {
+            echo 'Error inserting record: '.$this->mysqli->error;
+        }
+    }
+    public function del_Passenger($id)
+    {
+        $this->mysqli = new mysqli('localhost', 'user', 'password', 'avengers') or die('Could not select database');
+
+        if ($this->mysqli->connect_errno) {
+            echo 'Echec lors de la connexion à MySQLi : ('.$this->mysqli->connect_errno.') '.$this->mysqli->connect_error;
+        }
+        $query = "DELETE FROM avengers.peoples WHERE `peoples`.`id` = $id";
+        if ($this->mysqli->query($query) == true) {
+            //  echo 'Record updated successfully';
+        } else {
+            echo 'Error inserting record: '.$this->mysqli->error;
+        }
+    }
+    public function edit()
+    {
+        $this->mysqli = new mysqli('localhost', 'user', 'password', 'avengers') or die('Could not select database');
+
+        if ($this->mysqli->connect_errno) {
+            echo 'Echec lors de la connexion à MySQLi : ('.$this->mysqli->connect_errno.') '.$this->mysqli->connect_error;
+        }
+
+        $query = "UPDATE avengers.avengers SET `endroit` = '$this->destination' WHERE `avengers`.`id` = $this->id_travel";
+        if ($this->mysqli->query($query) == true) {
+        } else {
+            echo 'Error inserting record: '.$this->mysqli->error;
+        }
     }
     public function save()
     {
