@@ -1,38 +1,96 @@
 <?php
   include 'partials/header.php';
  ?>
-    <body>
-      <h1>Détails de réservation:</h1>
-      <p> Voyage vers <?php echo $trip->get_destination().':'; ?> </p>
-      <?php
-      if ($trip->has_insurance()) {
-          echo 'Avec assurance annulation.<br><br>';
-      } else {
-          echo 'Sans assurance annulation.<br><br>';
-      }
 
-      ?>
+<div id="step-2">
+
+      <h1 class="row">Détails de réservation</h1>
+
+      <div class="jumbotron container">
+          <h3>Récapitulatif</h3>
+          <p class="row">
+              <i class="fa fa-plane fa-2x col-md-1"></i>
+              <span class="destination col-md-11">
+                  <?php echo $trip->get_destination(); ?>
+              </span>
+          </p>
+          <p class="row">
+              <?php if ($trip->has_insurance()) {
+     ?>
+              <i class="fa fa-check fa-2x col-md-1"></i>
+              <span class="destination col-md-11">
+                  Avec assurance annulation
+              </span>
+              <?php
+
+ } else {
+     ?>
+              <i class="fa fa-times fa-2x col-md-1"></i>
+              <span class="destination col-md-11">
+                  Sans assurance annulation
+              </span>
+              <?php
+
+ }?>
+          </p>
+      </div>
+
       <form method="post" action="index.php">
-      <?php
-      //creating a dictionnary people
-      $people = array(); //doesn't work
 
-      for ($i = 1; $i < (int) $_POST['places'] + 1; ++$i) {
-          echo 'Voyageur ', $i; ?>
-          <p> Nom: <input name="traveller[]" type="text" placeholder="Nom Prénom" /></p>
-          <p> Age: <input name="age[]" type="text" placeholder="Age" /></p>
+
+          <div class="row">
+
           <?php
+          //creating a dictionnary people
+          $people = array(); //doesn't work
 
-      } ?>
+          for ($i = 1; $i < (int) $_POST['places'] + 1; ++$i) {
+              ?>
 
-      <p>
-        <button name="step_2" class="btn btn-primary btn-lg" name = "Submit">Suivant</button>
-        <button name="destroy_2" class="btn btn-default btn-lg">Annulation</button>
-      </p>
+              <div class="col-md-4 passenger">
+
+                  <h5>Voyageur #<?php echo $i; ?> </h4>
+                  <div class="form-group">
+                      <label for="traveller">Nom</label>
+                      <input name="traveller[]" type="text" placeholder="Voyageur" class="form-control">
+                  </div>
+                  <div class="form-group">
+                      <label for="age">Age</label>
+                      <input name="age[]" type="text" placeholder="Age" class="form-control">
+                  </div>
+              </div>
+              <?php
+
+          } ?>
+          </div>
+
+          <div class="row">
+              <div class="form-group col-md-12">
+                  <button name="step_2" class="btn btn-primary" name = "Submit">Suivant</button>
+                  <button name="destroy_2" class="btn btn-default">Annulation</button>
+              </div>
+          </div>
       </form>
-      <?php
 
-      include 'partials/footer.php';
+      <div class="stepwizard">
+          <div class="stepwizard-row">
+              <div class="stepwizard-step">
+                  <button type="button" class="btn btn-default btn-circle">1</button>
+                  <p>Destination</p>
+              </div>
+              <div class="stepwizard-step">
+                  <button type="button" class="btn btn-primary btn-circle">2</button>
+                  <p>Détails de réservation</p>
+              </div>
+              <div class="stepwizard-step">
+                  <button type="button" class="btn btn-default btn-circle" disabled="disabled">3</button>
+                  <p>Confirmation</p>
+              </div>
+          </div>
+      </div>
 
-      ?>
-      </body>
+</div>
+
+  <?php
+  include 'partials/footer.php';
+  ?>

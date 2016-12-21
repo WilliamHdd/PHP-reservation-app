@@ -6,43 +6,76 @@
     include 'partials/header.php';
 ?>
 
-<div class="row">
+<div id="step-1">
 
-    <h1>Réservation</h1>
+    <h1 class="row">Réservation</h1>
 
-    <p>
-        Prix des places:
-        <ul>
-            <li>Moins de 12 ans = 10€</li>
-            <li>Plus de 12 ans = 15€</li>
-        </ul>
-        Assurance reservation = 20 € peu importe le nombre de voyageurs.
-    </p>
+    <div class="row">
 
-    <form method="post" action="index.php" class="container">
-        <div class="form-group row">
-            <label for="destination">Destination</label>
-            <input type="text" id="destination" name="destination" placeholder="Destination" class="form-control" />
+        <div class="jumbotron">
+            <h3>Prix des places:</h3>
+            <ul>
+                <li>Moins de 12 ans = 10€</li>
+                <li>Plus de 12 ans = 15€</li>
+            </ul>
+            Assurance annullation = 20 € peu importe le nombre de voyageurs.
+        </div>
+    </div>
+
+    <form method="post" action="index.php">
+
+        <div class="row">
+            <div class="form-group col-md-6">
+                <label for="destination">Destination</label>
+                <input type="text" id="destination" name="destination" placeholder="Destination" class="form-control"
+                <?php if ($trip != null) {
+    echo 'value="'.$trip->get_destination().'"';
+}?>/>
+            </div>
+
+            <div class="form-group col-md-6">
+                <label for="places">Nombre de places</label>
+                <input type="number" min="1" id="places" name="places" class="form-control"
+                <?php if ($trip != null) {
+    echo 'value="'.$trip->get_n_passengers().'"';
+}?>/>
+            </div>
         </div>
 
-        <div class="form-group row">
-            <label for="places">Nombre de places</label>
-            <input type="number" id="places" name="places" class="form-control" />
-        </div>
 
-        <div class="form-check row">
+        <div class="form-check">
             <label class="form-check-label">
-                <input type="checkbox" id="insurance" name="insurance" value="valeur" class="form-check-input" />
-                Cancellation Insurance
+                <input type="checkbox" id="insurance" name="insurance" value="valeur" class="form-check-input" <?php if ($trip != null) {
+    echo 'checked='.$trip->has_insurance();
+}?> />
+                Assurance annullation
             </label>
         </div>
 
-        <div class="row">
-            <button type="submit" class="btn btn-primary" name="step_1">Suivant</button>
-            <button name="destroy" class="btn btn-default">Annulation</button>
-        </div>
+
+        <button type="submit" class="btn btn-primary" name="step_1">Suivant</button>
+        <button name="destroy" class="btn btn-default">Annulation</button>
+
 
     </form>
+
+    <div class="stepwizard">
+        <div class="stepwizard-row">
+            <div class="stepwizard-step">
+                <button type="button" class="btn btn-primary btn-circle">1</button>
+                <p>Destination</p>
+            </div>
+            <div class="stepwizard-step">
+                <button type="button" class="btn btn-default btn-circle" disabled="disabled">2</button>
+                <p>Détails de réservation</p>
+            </div>
+            <div class="stepwizard-step">
+                <button type="button" class="btn btn-default btn-circle" disabled="disabled">3</button>
+                <p>Confirmation</p>
+            </div>
+        </div>
+    </div>
+
 
 </div>
 

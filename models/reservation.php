@@ -11,7 +11,7 @@ class Reservation
     private $id_travel = 0;
     private $mysqli;
 
-    public function set_destination($dest)
+    public function set_destination(string $dest)
     {
         $this->destination = $dest;
     }
@@ -25,12 +25,20 @@ class Reservation
         return $this->destination;
     }
 
-    public function set_n_passengers($n)
+    public function set_n_passengers(int $n)
     {
+        if (is_null($n)) {
+            throw new Exception('Number of passengers is null');
+        }
         $this->n_passengers = $n;
     }
 
-    public function set_cancellation_insurance($insurance)
+    public function get_n_passengers()
+    {
+        return $this->n_passengers;
+    }
+
+    public function set_cancellation_insurance(bool $insurance)
     {
         if (is_bool($insurance)) {
             $this->cancellation_insurance = $insurance;
@@ -44,7 +52,7 @@ class Reservation
         return $this->cancellation_insurance;
     }
 
-    public function add_passenger($passenger)
+    public function add_passenger(Passenger $passenger)
     {
         $this->passengers[] = $passenger;
     }
