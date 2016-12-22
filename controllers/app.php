@@ -25,6 +25,10 @@ class App
             $this->home();
         } elseif (isset($_POST['Update'])) {
             $this->update();
+        } elseif (isset($_POST['remove'])) {
+            $id = $_POST['remove'];
+            Reservation::remove($id);
+            $this->home();
         } else {
             $this->home();
         }

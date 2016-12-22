@@ -48,7 +48,16 @@
                 echo '<tr>';
                 echo '<td class="text-xs-center">'.$res['id'].'</td>';
                 echo '<td class="text-xs-center">'.$res['destination'].'</td>';
-                echo '<td class="text-xs-center">'.$res['insurance'].'</td>';
+
+                if ($res['insurance']) {
+                    echo '<td class="text-xs-center">
+                        <i class="fa fa-check"></i>
+                    </td>';
+                } else {
+                    echo '<td class="text-xs-center">
+                        <i class="fa fa-times"></i>
+                    </td>';
+                }
 
                 echo '<td class="text-xs-center edit">
                         <form method="post" action="index.php">

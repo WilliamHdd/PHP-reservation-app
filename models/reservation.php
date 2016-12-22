@@ -222,4 +222,14 @@ class Reservation
 
         return $reservations;
     }
+
+    public static function remove($id)
+    {
+        $mysqli = new mysqli('localhost', 'user', 'password', 'avengers') or die('Could not select database');
+
+        $query = $mysqli->prepare('DELETE FROM avengers WHERE id = ?');
+        $query->bind_param('i', $id);
+        $query->execute();
+        $query->close();
+    }
 }
