@@ -4,12 +4,23 @@ include_once 'passenger.php';
 
 class Reservation
 {
+    private $id = null;
     private $destination;
     private $n_passengers = 0;
     private $cancellation_insurance = false;
     private $passengers = array();
     private $id_travel = 0;
     private $mysqli;
+
+    public function __construct(string $dest, bool $insurance, int $id = null)
+    {
+        if ($id != null) {
+            $this->id = $id;
+        }
+
+        $this->dest = $dest;
+        $this->cancellation_insurance = $insurance;
+    }
 
     public function set_destination(string $dest)
     {
@@ -231,5 +242,33 @@ class Reservation
         $query->bind_param('i', $id);
         $query->execute();
         $query->close();
+    }
+
+    public static function get($id)
+    {
+        $mysqli = new mysqli('localhost', 'user', 'password', 'avengers') or die('Could not select database');
+
+        $query = $mysqli->prepare('SELECT * FROM avengers WHERE id = ?');
+        $query->bind_param('i', $id);
+        $query->execute();
+        $query->bind_result($id, $destination, $insurance);
+        $query->fetch();
+        $query->close();
+
+        $reservation = new self($destination, $insurance, $id);
+
+        $query = $mysqli->prepare('SELECT * FROM peoples WHERE voyage = ?');
+        $query->bind_param('i', $id);
+        $query->execute();
+        $query->bind_result($id, $name, $age, $reserv_id);
+
+        while ($query->fetch()) {
+            $passenger = new Passenger($name, $age, $id);
+            $reservation->add_passenger($passenger);
+        }
+
+        $query->close();
+
+        return $reservation;
     }
 }
