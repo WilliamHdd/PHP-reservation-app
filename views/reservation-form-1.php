@@ -27,8 +27,9 @@
         <div class="row">
             <div class="form-group col-md-6">
                 <label for="destination">Destination</label>
-                <input type="text" id="destination" name="destination" placeholder="Destination" class="form-control"
+                <input type="text" id="destination" name="destination"  class="form-control"
                 <?php if ($trip != null) {
+    var_dump($trip->get_destination());
     echo 'value="'.$trip->get_destination().'"';
 }?>/>
             </div>

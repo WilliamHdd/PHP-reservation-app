@@ -8,7 +8,7 @@ class Reservation
     private $destination;
     private $n_passengers = 0;
     private $cancellation_insurance = false;
-    private $passengers = array();
+    public $passengers = array();
     private $id_travel = 0;
     private $mysqli;
 
@@ -103,6 +103,7 @@ class Reservation
     {
         return $this->id_travel;
     }
+
     public function load_data($id)
     {
         $this->mysqli = new mysqli('localhost', 'user', 'password', 'avengers') or die('Could not select database');
@@ -118,6 +119,7 @@ class Reservation
 
         return $array;
     }
+
     public function load_people($id)
     {
         $this->mysqli = new mysqli('localhost', 'user', 'password', 'avengers') or die('Could not select database');
@@ -147,6 +149,7 @@ class Reservation
 
         return $posts;
     }
+
     public function save_Passenger($traveller, $age, $reserv_ID)
     {
         $this->mysqli = new mysqli('localhost', 'user', 'password', 'avengers') or die('Could not select database');
@@ -198,22 +201,51 @@ class Reservation
             echo 'Echec lors de la connexion à MySQLi : ('.$this->mysqli->connect_errno.') '.$this->mysqli->connect_error;
         }
 
-        $sqlReserv = "INSERT INTO avengers.avengers(endroit, Cancel_Insurance)
+        if ($this->id_travel == 0) {
+            $sqlReserv = "INSERT INTO avengers.avengers(endroit, Cancel_Insurance)
         VALUES('$this->destination','$this->cancellation_insurance')";
-        if ($this->mysqli->query($sqlReserv) == true) {
-            //  echo 'Record updated successfully';
+            if ($this->mysqli->query($sqlReserv) == true) {
+                //  echo 'Record updated successfully';
             $id_insert = $this->mysqli->insert_id;
-            $this->id_travel = $id_insert;
-        } else {
-            echo 'Error inserting record: '.$this->mysqli->error;
-        }
-        foreach ($this->passengers as $i => $passenger) {
-            $sqlPerson = "INSERT INTO avengers.peoples(name, age, voyage)
-            VALUES('$passenger->name','$passenger->age','$id_insert')";
-            if ($this->mysqli->query($sqlPerson) == true) {
-                //echo 'Record updated successfully';
+                $this->id_travel = $id_insert;
             } else {
                 echo 'Error inserting record: '.$this->mysqli->error;
+            }
+        } else {
+
+            //UPDATE `peoples` SET `name` = 'Mathieux', `age` = '23' WHERE `peoples`.`id` = 86;
+            $query = $this->mysqli->prepare('UPDATE avengers SET endroit = ?, Cancel_Insurance = ? WHERE id = ?');
+            $query->bind_param('sii', $this->destination, $this->cancellation_insurance, $this->id_travel);
+
+            if ($query->execute() == false) {
+                echo 'Error inserting record: '.$this->mysqli->error;
+            }
+
+            $query->close();
+        }
+
+        foreach ($this->passengers as $i => $passenger) {
+            //var_dump($passenger->return_id());
+            if ($passenger->return_id() == 0) {
+                $sqlPerson = "INSERT INTO avengers.peoples(name, age, voyage)
+                VALUES('$passenger->name','$passenger->age','$this->id_travel')";
+                if ($this->mysqli->query($sqlPerson) == true) {
+                    //echo 'Record updated successfully';
+                } else {
+                    echo 'Error inserting record: '.$this->mysqli->error;
+                }
+            } else {
+                echo 'Updating'.$passenger->return_id();
+                $p_id = $passenger->return_id();
+                //UPDATE `peoples` SET `name` = 'Mathieux', `age` = '23' WHERE `peoples`.`id` = 86;
+                $query = $this->mysqli->prepare('UPDATE peoples SET name = ?, age = ?, voyage = ? WHERE id = ?');
+                $query->bind_param('siii', $passenger->name, $passenger->age, $this->id_travel, $p_id);
+
+                if ($query->execute() == false) {
+                    echo 'Error inserting record: '.$this->mysqli->error;
+                }
+
+                $query->close();
             }
         }
     }

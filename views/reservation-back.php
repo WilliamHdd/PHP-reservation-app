@@ -54,14 +54,6 @@ foreach ($ptisCons as $i) {
 </div>
 </form>
 
-
-
-
-
-
-
-
-
 <?php
     // Include the footer file that contains
     // - javascript includes

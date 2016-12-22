@@ -8,9 +8,9 @@ class App
         include_once 'models/passenger.php';
         if (isset($_POST['new'])) {
             $this->new();
-        } elseif (isset($_POST['old'])) {
+        } /*elseif (isset($_POST['old'])) {
             $this->old();
-        } elseif (isset($_POST['step_1'])) {
+        } */elseif (isset($_POST['step_1'])) {
             $this->step_1();
         } elseif (isset($_POST['step_2'], $_SESSION['trip'])) {
             $this->step_2();
@@ -29,6 +29,10 @@ class App
             $id = $_POST['remove'];
             Reservation::remove($id);
             $this->home();
+        } elseif (isset($_POST['edit'])) {
+            $id = $_POST['edit'];
+            $this->load_reservation_to_session($id);
+            $this->new();
         } else {
             $this->home();
         }
@@ -76,26 +80,11 @@ class App
 
         include 'views/reservation-form-1.php';
     }
-    private function old()
+
+    private function load_reservation_to_session($id)
     {
-        $trip = new Reservation();
-        //$trip->acces_DB();
-        try {
-            $reserv_ID = $trip->get_id_travel();
-        } catch (UndefinedIndexError  $e) {
-            $reserv_ID = filter_var($_POST['reserv_ID'], FILTER_VALIDATE_INT);
-        }
-
-        $data = $trip->load_data($reserv_ID);
-        $ptisCons = $trip->load_people($reserv_ID);
-        $destination = $data['endroit'];
-        $trip->set_destination($destination);
-        $id_trav = $data['id'];
-        $trip->set_id_travel($id_trav);
-        $assurance = $trip->insurance_to_string($data['Cancel_Insurance']);
+        $trip = Reservation::get($id);
         $_SESSION['trip'] = serialize($trip);
-
-        include 'views/reservation-back.php';
     }
 
     private function step_1()

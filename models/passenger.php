@@ -10,9 +10,13 @@ class Passenger
     {
         $this->name = $name;
         $this->age = $age;
-
         if ($id != null) {
             $this->id = $id;
         }
+    }
+
+    public function return_id()
+    {
+        return $this->id;
     }
 }
