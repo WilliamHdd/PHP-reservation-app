@@ -12,7 +12,7 @@ class Reservation
     private $id_travel = 0;
     private $mysqli;
 
-    public function __construct(string $dest, bool $insurance, int $id = null)
+    public function __construct(string $dest = null, bool $insurance = null, int $id = null)
     {
         if ($id != null) {
             $this->id = $id;
@@ -66,6 +66,9 @@ class Reservation
     public function add_passenger(Passenger $passenger)
     {
         $this->passengers[] = $passenger;
+        if (count($this->passengers) > $this->n_passengers) {
+            $this->n_passengers = count($this->passengers);
+        }
     }
 
     public function complete()
