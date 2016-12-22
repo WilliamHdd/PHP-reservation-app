@@ -18,7 +18,7 @@ class Reservation
             $this->id = $id;
         }
 
-        $this->dest = $dest;
+        $this->destination = $dest;
         $this->cancellation_insurance = $insurance;
     }
 

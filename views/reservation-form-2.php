@@ -53,7 +53,8 @@
                   <div class="form-group">
                       <label for="traveller">Nom</label>
                       <input name="traveller[]" type="text" placeholder="Voyageur" class="form-control"
-                      <?php if (array_key_exists($c, $trip->passengers)) {
+                      <?php var_dump($trip);
+              if (array_key_exists($c, $trip->passengers)) {
                   echo 'value="'.$trip->passengers[$c]->name.'"';
               } ?>/>
                   </div>

@@ -28,18 +28,18 @@
             <div class="form-group col-md-6">
                 <label for="destination">Destination</label>
                 <input type="text" id="destination" name="destination"  class="form-control"
-                <?php if ($trip != null) {
-    var_dump($trip->get_destination());
-    echo 'value="'.$trip->get_destination().'"';
-}?>/>
+                <?php
+                   if ($trip != null) {
+                       echo 'value="'.$trip->get_destination().'"';
+                   }?>/>
             </div>
 
             <div class="form-group col-md-6">
                 <label for="places">Nombre de places</label>
                 <input type="number" min="1" id="places" name="places" class="form-control"
                 <?php if ($trip != null) {
-    echo 'value="'.$trip->get_n_passengers().'"';
-}?>/>
+                       echo 'value="'.$trip->get_n_passengers().'"';
+                   }?>/>
             </div>
         </div>
 
@@ -47,8 +47,8 @@
         <div class="form-check">
             <label class="form-check-label">
                 <input type="checkbox" id="insurance" name="insurance" value="valeur" class="form-check-input" <?php if ($trip != null) {
-    echo 'checked='.$trip->has_insurance();
-}?> />
+                       echo 'checked='.$trip->has_insurance();
+                   }?> />
                 Assurance annullation
             </label>
         </div>
