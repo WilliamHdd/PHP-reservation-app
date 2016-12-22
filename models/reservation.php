@@ -112,6 +112,7 @@ class Reservation
             echo 'Echec lors de la connexion à MySQLi : ('.$this->mysqli->connect_errno.') '.$this->mysqli->connect_error;
         }
 
+        // FIXME: NOT GOOD --> SQL INJECTION RISK...
         $load_People = "SELECT * FROM avengers.peoples WHERE voyage =$id";
         $resultP = $this->mysqli->query($load_People);
         $posts = array();
@@ -201,5 +202,24 @@ class Reservation
                 echo 'Error inserting record: '.$this->mysqli->error;
             }
         }
+    }
+
+    public static function list_reservations()
+    {
+        $mysqli = new mysqli('localhost', 'user', 'password', 'avengers') or die('Could not select database');
+
+        $query = $mysqli->prepare('SELECT * FROM avengers');
+        $query->execute();
+        $query->bind_result($id, $destination, $insurance);
+
+        $reservations = array();
+
+        while ($query->fetch()) {
+            $reservations[] = ['id' => $id, 'destination' => $destination, 'insurance' => $insurance];
+        }
+
+        $query->close();
+
+        return $reservations;
     }
 }
