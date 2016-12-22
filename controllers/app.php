@@ -116,7 +116,11 @@ class App
           <?php
           $this->new();
         } else {
-            $trip = new Reservation();
+            if (isset($_SESSION['trip'])) {
+                $trip = unserialize($_SESSION['trip']);
+            } else {
+                $trip = new Reservation();
+            }
 
             $target = $_POST['destination'];
             $places = filter_var($_POST['places'], FILTER_VALIDATE_INT);

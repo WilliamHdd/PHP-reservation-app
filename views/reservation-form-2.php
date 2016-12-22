@@ -43,31 +43,31 @@
           <?php
           //creating a dictionnary people
           $people = array(); //doesn't work
-          $c = 0;
-          for ($i = 1; $i < (int) $_POST['places'] + 1; ++$i) {
+          for ($i = 0; $i < (int) $_POST['places']; ++$i) {
               ?>
 
               <div class="col-md-4 passenger">
 
-                  <h5>Voyageur #<?php echo $i; ?> </h4>
+                  <h5>Voyageur #<?php echo $i + 1; ?> </h4>
                   <div class="form-group">
                       <label for="traveller">Nom</label>
                       <input name="traveller[]" type="text" placeholder="Voyageur" class="form-control"
-                      <?php var_dump($trip);
-              if (array_key_exists($c, $trip->passengers)) {
-                  echo 'value="'.$trip->passengers[$c]->name.'"';
-              } ?>/>
+                      <?php
+                        if (array_key_exists($i, $trip->passengers)) {
+                            echo 'value="'.$trip->passengers[$i]->name.'"';
+                        } ?>
+                      />
                   </div>
                   <div class="form-group">
                       <label for="age">Age</label>
                       <input name="age[]" type="text" placeholder="Age" class="form-control"
-                      <?php  if (array_key_exists($c, $trip->passengers)) {
-                  echo 'value="'.$trip->passengers[$c]->age.'"';
-              } ?>/>
+                      <?php  if (array_key_exists($i, $trip->passengers)) {
+                            echo 'value="'.$trip->passengers[$i]->age.'"';
+                        } ?>/>
                   </div>
               </div>
               <?php
-              $c += 1;
+
           } ?>
           </div>
 

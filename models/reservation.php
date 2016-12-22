@@ -279,12 +279,12 @@ class Reservation
         $query->close();
     }
 
-    public static function get($id)
+    public static function get($trip_id)
     {
         $mysqli = new mysqli('localhost', 'user', 'password', 'avengers') or die('Could not select database');
 
         $query = $mysqli->prepare('SELECT * FROM avengers WHERE id = ?');
-        $query->bind_param('i', $id);
+        $query->bind_param('i', $trip_id);
         $query->execute();
         $query->bind_result($id, $destination, $insurance);
         $query->fetch();
@@ -293,7 +293,7 @@ class Reservation
         $reservation = new self($destination, $insurance, $id);
 
         $query = $mysqli->prepare('SELECT * FROM peoples WHERE voyage = ?');
-        $query->bind_param('i', $id);
+        $query->bind_param('i', $trip_id);
         $query->execute();
         $query->bind_result($id, $name, $age, $reserv_id);
 
