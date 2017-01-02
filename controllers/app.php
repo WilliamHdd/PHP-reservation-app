@@ -142,8 +142,10 @@ class App
         $travellers = $_POST['traveller'];
         $ages = $_POST['age'];
         $trip = unserialize($_SESSION['trip']);
-
+        $trip->erase_passengers_DB();
+        unset($trip->passengers);
         foreach ($travellers as $i => $traveller) {
+            //location of duplication of passengers !! being created twice
             $trip->add_passenger(new passenger($traveller, $ages[$i]));
             $age = $ages[$i];
         }

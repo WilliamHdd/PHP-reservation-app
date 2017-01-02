@@ -4,7 +4,7 @@ class Passenger
 {
     public $name;
     public $age;
-    private $id = null;
+    public $id = null;
 
     public function __construct($name, $age, $id = null)
     {

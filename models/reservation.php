@@ -4,12 +4,12 @@ include_once 'passenger.php';
 
 class Reservation
 {
-    private $id = null;
+    private $id;
     private $destination;
     private $n_passengers = 0;
     private $cancellation_insurance = false;
     public $passengers = array();
-    private $id_travel = 0;
+    //private $id_travel = 0;
     private $mysqli;
 
     public function __construct(string $dest = null, bool $insurance = null, int $id = null)
@@ -28,7 +28,7 @@ class Reservation
     }
     public function set_id_travel($value)
     {
-        $this->id_travel = $value;
+        $this->id = $value;
     }
 
     public function get_destination()
@@ -101,7 +101,7 @@ class Reservation
     }
     public function get_id_travel()
     {
-        return $this->id_travel;
+        return $this->id;
     }
 
     public function load_data($id)
@@ -150,49 +150,6 @@ class Reservation
         return $posts;
     }
 
-    public function save_Passenger($traveller, $age, $reserv_ID)
-    {
-        $this->mysqli = new mysqli('localhost', 'user', 'password', 'avengers') or die('Could not select database');
-
-        if ($this->mysqli->connect_errno) {
-            echo 'Echec lors de la connexion à MySQLi : ('.$this->mysqli->connect_errno.') '.$this->mysqli->connect_error;
-        }
-        $query = "INSERT INTO avengers.peoples(name, age, voyage)
-      VALUES('$traveller', '$age','$reserv_ID')";
-        if ($this->mysqli->query($query) == true) {
-            //  echo 'Record updated successfully';
-        } else {
-            echo 'Error inserting record: '.$this->mysqli->error;
-        }
-    }
-    public function del_Passenger($id)
-    {
-        $this->mysqli = new mysqli('localhost', 'user', 'password', 'avengers') or die('Could not select database');
-
-        if ($this->mysqli->connect_errno) {
-            echo 'Echec lors de la connexion à MySQLi : ('.$this->mysqli->connect_errno.') '.$this->mysqli->connect_error;
-        }
-        $query = "DELETE FROM avengers.peoples WHERE `peoples`.`id` = $id";
-        if ($this->mysqli->query($query) == true) {
-            //  echo 'Record updated successfully';
-        } else {
-            echo 'Error inserting record: '.$this->mysqli->error;
-        }
-    }
-    public function edit()
-    {
-        $this->mysqli = new mysqli('localhost', 'user', 'password', 'avengers') or die('Could not select database');
-
-        if ($this->mysqli->connect_errno) {
-            echo 'Echec lors de la connexion à MySQLi : ('.$this->mysqli->connect_errno.') '.$this->mysqli->connect_error;
-        }
-
-        $query = "UPDATE avengers.avengers SET `endroit` = '$this->destination' WHERE `avengers`.`id` = $this->id_travel";
-        if ($this->mysqli->query($query) == true) {
-        } else {
-            echo 'Error inserting record: '.$this->mysqli->error;
-        }
-    }
     public function save()
     {
         $this->mysqli = new mysqli('localhost', 'user', 'password', 'avengers') or die('Could not select database');
@@ -201,21 +158,21 @@ class Reservation
             echo 'Echec lors de la connexion à MySQLi : ('.$this->mysqli->connect_errno.') '.$this->mysqli->connect_error;
         }
 
-        if ($this->id_travel == 0) {
+        if ($this->id == null) {
             $sqlReserv = "INSERT INTO avengers.avengers(endroit, Cancel_Insurance)
         VALUES('$this->destination','$this->cancellation_insurance')";
             if ($this->mysqli->query($sqlReserv) == true) {
                 //  echo 'Record updated successfully';
             $id_insert = $this->mysqli->insert_id;
-                $this->id_travel = $id_insert;
+                $this->id = $id_insert;
             } else {
                 echo 'Error inserting record: '.$this->mysqli->error;
             }
         } else {
 
             //UPDATE `peoples` SET `name` = 'Mathieux', `age` = '23' WHERE `peoples`.`id` = 86;
-            $query = $this->mysqli->prepare('UPDATE avengers SET endroit = ?, Cancel_Insurance = ? WHERE id = ?');
-            $query->bind_param('sii', $this->destination, $this->cancellation_insurance, $this->id_travel);
+            $query = $this->mysqli->prepare('UPDATE avengers SET endroit = ?, Cancel_Insurance = ? WHERE avengers.id = ?');
+            $query->bind_param('sii', $this->destination, $this->cancellation_insurance, $this->id);
 
             if ($query->execute() == false) {
                 echo 'Error inserting record: '.$this->mysqli->error;
@@ -226,9 +183,11 @@ class Reservation
 
         foreach ($this->passengers as $i => $passenger) {
             //var_dump($passenger->return_id());
-            if ($passenger->return_id() == 0) {
+            if ($passenger->id == null) {
+                var_dump($this->passengers);
+                echo '<br>';
                 $sqlPerson = "INSERT INTO avengers.peoples(name, age, voyage)
-                VALUES('$passenger->name','$passenger->age','$this->id_travel')";
+                VALUES('$passenger->name','$passenger->age','$this->id')";
                 if ($this->mysqli->query($sqlPerson) == true) {
                     //echo 'Record updated successfully';
                 } else {
@@ -237,9 +196,10 @@ class Reservation
             } else {
                 echo 'Updating'.$passenger->return_id();
                 $p_id = $passenger->return_id();
+                var_dump($p_id);
                 //UPDATE `peoples` SET `name` = 'Mathieux', `age` = '23' WHERE `peoples`.`id` = 86;
-                $query = $this->mysqli->prepare('UPDATE peoples SET name = ?, age = ?, voyage = ? WHERE id = ?');
-                $query->bind_param('siii', $passenger->name, $passenger->age, $this->id_travel, $p_id);
+                $query = $this->mysqli->prepare('UPDATE peoples SET name = ?, age = ? WHERE voyage = ?');
+                $query->bind_param('sii', $passenger->name, $passenger->age, $this->id);
 
                 if ($query->execute() == false) {
                     echo 'Error inserting record: '.$this->mysqli->error;
@@ -278,7 +238,16 @@ class Reservation
         $query->execute();
         $query->close();
     }
-
+    public function erase_passengers_DB()
+    {
+        $mysqli = new mysqli('localhost', 'user', 'password', 'avengers') or die('Could not select database');
+        foreach ($this->passengers as $i => $passenger) {
+            $query = $mysqli->prepare('DELETE FROM avengers.peoples where voyage = ?');
+            $query->bind_param('i', $this->id);
+            $query->execute();
+            $query->close();
+        }
+    }
     public static function get($trip_id)
     {
         $mysqli = new mysqli('localhost', 'user', 'password', 'avengers') or die('Could not select database');
