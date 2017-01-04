@@ -32,8 +32,44 @@ La dernière page est un récapitulatif de l'ensemble de la réservation. Il dev
 
 
 ## Structure du projet
+La structure de notre code reflète bien le **pattern MVC** que nous avons utilisé pour ce projet, comme demandé dans l'énoncé. Nous pouvons retrouver un **controleur**, plusieures **vues** et deux **modèles** dans notre projet.
+```
+.
+├── index.php
+├── controllers
+│   └── app.php
+├── css
+│   └── style.css
+├── LICENSE
+├── models
+│   ├── passenger.php
+│   └── reservation.php
+└── views
+    ├── partials
+    │   ├── footer.php
+    │   └── header.php
+    ├── reservation-form-0.php
+    ├── reservation-form-1.php
+    ├── reservation-form-2.php
+    └── reservation-form-validated.php
+```
 
-*Ici on montre la structure du projet et on explique pourquoi on a choisit une telle structure (ref MVC)*
+Toutes les requêtes sont faites vers le fichier `index.php`, qui va démarrer la session et lancer le controlleur pour qu'il gère la requête.
+
+Le controleur, situé dans `controllers/app.php` est une classe contenant une seule methode d'instance publique: `handle()`. Cette méthode va vérifier la présence, ou non, de certains paramètres envoyé avec la requête pour la dispatcher à une des méthodes internes qui s'occupera de faire les validations nécéssaires et d'afficher la page adéquate.
+
+Il est intéréssent de noter que quand on affiche une des pages du formulaire, nous vérifions si les données ne sont pas déjà inscrite dans la session à l'aide de ce petit bout de code:
+
+```php
+<?php
+if (isset($_SESSION['trip'])) {
+    $trip = unserialize($_SESSION['trip']);
+} else {
+    $trip = null;
+}
+?>
+```
+
 
 ## Diagramme de séquence
 
@@ -45,7 +81,7 @@ La dernière page est un récapitulatif de l'ensemble de la réservation. Il dev
 
 
 ## Code
-**index.php**
+##### index.php
 ```php
 <?php
     session_start();
@@ -54,7 +90,7 @@ La dernière page est un récapitulatif de l'ensemble de la réservation. Il dev
     $app->handle();
 ```
 
-**controllers/app.php**
+##### controllers/app.php
 ```php
 <?php
 
@@ -230,7 +266,7 @@ class App
 }
 ```
 
-**models/reservation.php**
+##### models/reservation.php
 ```php
 <?php
 
@@ -512,7 +548,7 @@ class Reservation
 }
 ```
 
-**models/passenger.php**
+##### models/passenger.php
 ```php
 <?php
 
@@ -538,7 +574,7 @@ class Passenger
 }
 ```
 
-**views/partials/header.php**
+##### views/partials/header.php
 ```php
 <!DOCTYPE html>
 <html>
@@ -559,7 +595,7 @@ class Passenger
       <div class="container">
 ```
 
-**views/partials/footer.php**
+##### views/partials/footer.php
 ```php
 </div>
 
@@ -570,7 +606,7 @@ class Passenger
 </html>
 ```
 
-**views/reservation-form-0.php**
+##### views/reservation-form-0.php
 ```php
 <?php
     // Include the header file that contains
@@ -662,7 +698,7 @@ class Passenger
 ?>
 ```
 
-**views/reservation-form-1.php**
+##### views/reservation-form-1.php
 ```php
 <?php
     // Include the header file that contains
@@ -754,7 +790,7 @@ class Passenger
 ?>
 ```
 
-**views/reservation-form-2.php**
+##### views/reservation-form-2.php
 ```php
 <?php
   include 'partials/header.php';
@@ -861,7 +897,7 @@ class Passenger
   ?>
 ```
 
-**views/reservation-form-validated.php**
+##### views/reservation-form-validated.php
 ```php
 <?php
     // Include the header file that contains
