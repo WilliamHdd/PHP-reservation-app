@@ -184,8 +184,6 @@ class Reservation
         foreach ($this->passengers as $i => $passenger) {
             //var_dump($passenger->return_id());
             if ($passenger->id == null) {
-                var_dump($this->passengers);
-                echo '<br>';
                 $sqlPerson = "INSERT INTO avengers.peoples(name, age, voyage)
                 VALUES('$passenger->name','$passenger->age','$this->id')";
                 if ($this->mysqli->query($sqlPerson) == true) {

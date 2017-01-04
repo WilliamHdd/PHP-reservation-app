@@ -12,7 +12,7 @@
 
     <div class="jumbotron">
         <p>
-            Voici une récapitulation de vôtre réservation.<br>
+            Voici une récapitulation de votre réservation.<br>
             Veuillez vérifier que les informations soient correctes avant de confirmer.
         <p>
 
