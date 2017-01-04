@@ -2,7 +2,24 @@
 
 ## Introduction
 
-*Ici on introduit notre projet en disant ce que ça fait. On mes les screenshot du fonctionnement normal du programme. On ne détaille pas le fonctionnement interne, uniquement ce que l'utilisateur verrait.*
+*Ici on introduit notre projet en disant ce que ça fait. On met les screenshot du fonctionnement normal du programme. On ne détaille pas le fonctionnement interne, uniquement ce que l'utilisateur verrait.*
+
+Notre application de réservation en ligne a été pensée et structurée de la façon la plus agréable et simple d'utilisation possible selon nous. Fesons le tour des différentes pages afin d'en expliquer l'utilisation.
+
+La première page comporte plusieurs éléments.
+Tout d'abord intéressons nous au bouton "nouvelle réservation". Ce dernier comme son nom l'indique permet de créer une réservation et va donc rediriger vers une autre page où différentes informations seront demandées.
+Nous avons ensuite un tableau où l'ensemble des réservations déjà effectuées précédement sont réunies. Chaque ligne de ce tableau indique la destination choisie, le numéros de la réservation, si une assurance annulationa été souscrite, un bouton de modification et un de suppression. Le premier renverra vers les mêmes pages que pour une nouvelle réservation, à l'exception qu'elles seront préremplies avec les valeurs propres à la réservation désirée. Le bouton de suppression, lui, supprimera de façon définitive la réservation (attention les passagers de cette réservation resteront eux en mémoire dans la base de données).
+
+Les pages dont l'explication suit ne seront visible que si le bouton "nouvelle réservation" ou un des boutons "modifier" a été enfoncé.
+
+Dans le seconde page, trois champs demandent à être complété. Premièrement un nom de destination doit être saisi. Pour le moment toutes les destinations existe, une possibilité d'amélioration serait de restreindre le choix de l'utilisateur à une liste de destinations proposées.
+Nous voyons ensuite un champs "assurance annulation". Ce champs va permettre de pouvoir annuler un voyage sans frais. Cette assurance n'est pas par défaut, il faut donc cocher la case pour la demander.
+Il suffit ensuite d'indiquer le nombre de personnes participant au voyage et de passer à l'étape suivante en cliquant sur "suivant".
+
+La troisième page sert à récolter les informations (nom et âge) propre à chaque passageur. Il faut là entrer les informations demandées et cliquer sur "suivant".
+
+La dernière page est un récapitulatif de l'ensemble de la réservation. Il devrait apparaitre sur cette page la destination avec/sans assurance et l'ensemble des passagers ainsi que leurs données propores. Pour valider la réservation cliquer sur "confirmer", vous serez ensuite automatiquement rediriger vers la page d'accueil où devrait maintenant apparaitre dans le tableau récapitulatif la réservation qui vient d'être réalisée.
+
 
 ## Structure du projet
 
@@ -11,6 +28,10 @@
 ## Diagramme de séquence
 
 *Diagramme de séquence ici + explications?*
+
+##Conclusion
+
+*ce qu'on aurait pu ajouter ou changer
 
 
 ## Code

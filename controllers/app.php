@@ -16,15 +16,9 @@ class App
             $this->step_2();
         } elseif (isset($_POST['destroy']) || isset($_POST['destroy_2'])) {
             $this->cancel();
-        } elseif (isset($_POST['add'])) {
-            $this->update_P();
-        } elseif (isset($_POST['delete'])) {
-            $this->delete_P();
         } elseif (isset($_POST['Done'])) {
             session_destroy();
             $this->home();
-        } elseif (isset($_POST['Update'])) {
-            $this->update();
         } elseif (isset($_POST['remove'])) {
             $id = $_POST['remove'];
             Reservation::remove($id);
@@ -36,34 +30,6 @@ class App
         } else {
             $this->home();
         }
-    }
-    private function update_P()
-    {
-        $trip = unserialize($_SESSION['trip']);
-
-        $traveller = $_POST['traveller'];
-        $age = $_POST['age'];
-        $reserv_ID = $trip->get_id_travel();
-        $trip->save_Passenger($traveller, $age, $reserv_ID);
-        $this->old();
-        $_SESSION['trip'] = serialize($trip);
-    }
-    private function update()
-    {
-        $trip = unserialize($_SESSION['trip']);
-
-        $new_dest = $_POST['modif'];
-        $trip->set_destination($new_dest);
-        $trip->edit();
-        $this->old();
-    }
-    private function delete_P()
-    {
-        $trip = unserialize($_SESSION['trip']);
-        $id = $_POST['Delete_P'];
-        $trip->del_Passenger($id);
-        $this->old();
-        $_SESSION['trip'] = serialize($trip);
     }
 
     private function home()

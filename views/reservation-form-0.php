@@ -20,13 +20,7 @@
             </form>
         </div>
 
-        <div class="col-md-6">
-            <form method="post" action="index.php" class="container">
-                <button id="old-reservations" type="submit" class="btn btn-primary big" name="old">
-                    Accéder à une réservation
-                </button>
-            </form>
-        </div>
+      
     </div>
 
 
