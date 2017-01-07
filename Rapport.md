@@ -74,6 +74,8 @@ if (isset($_SESSION['trip'])) {
 ## Diagramme de séquence
 
 *Diagramme de séquence ici + explications?*
+![Diagramme de séquence vue client:](images/reservation_diag_seq.jpg)
+
 
 ##Conclusion
 
