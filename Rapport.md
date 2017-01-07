@@ -73,13 +73,20 @@ if (isset($_SESSION['trip'])) {
 
 ## Diagramme de séquence
 
-*Diagramme de séquence ici + explications?*
+
 ![Diagramme de séquence vue client:](images/reservation_diag_seq.jpg)
 
 
 ##Conclusion
 
-*Ce qu'on aurait pu ajouter ou changer*
+
+*a dire : pas d interface admin, pas assez de commentaire, pas de calcul du prix du voyage, et sécurité pas optimal /*
+
+
+Plusieurs choses pourraient être le sujet de modification et de dévellopement. Les raisons pour lesquelles nous n'avons pas fait ces modifications est simple, manque de temps et consigne par vague. Nous avons en effet reçu en deux semaines un très grand nombre de projet à rendre en un labs de temps assez cours. Difficile donc de pousser chaque projet jusqu'au bout, nous avons préféré rendre plusieurs bons projets plutôt que un excellent et plusieurs médiocres. La seconde raison est que ce site web a été construit pas à pas avec des objectis finaux qui n'était pas tout à fait dans la même optique. Nous avons en effet du modifier un projet existant (faisant le sujet du travail précédent) pour ce site, et le modifier pour qu'il fasse l'affaire. La bonne solution qu'il aurait fallu faire aurait été de tout recommencer à zéro en s'inspirant du travail déjà fourni et non le modifier. Bien sûr celà aurait demandé un temps et des efforts supplémentaires que nous n'avions pas le luxe d'avoir.
+
+Nous mettons donc en avant par ce projet qu'il faut toujours bien déterminé les attentes envers le produit final avant de commencer sa conception et se limiter à ce qui avait été décidé sans changer en cours de route d'avis sur ce que le résultat final doit faire.
+
 
 
 ## Code
