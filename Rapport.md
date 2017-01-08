@@ -9,20 +9,20 @@ Notre application de réservation en ligne a été pensée et structurée de la 
 La première page comporte plusieurs éléments.
 Tout d'abord intéressons nous au bouton **"Nouvelle réservation"**. Ce dernier comme son nom l'indique permet de créer une réservation et va donc rediriger vers une autre page où différentes informations seront demandées.
 
-Nous avons ensuite un tableau où l'ensemble des réservations déjà effectuées précédemment est récapitulé. Chaque ligne de ce tableau indique la destination choisie, le numéro de la réservation, si une assurance annulation a été souscrite, un bouton de modification et un de suppression. Le premier renverra vers les mêmes pages que pour une nouvelle réservation, à l'exception qu'elles seront pré-remplies avec les valeurs propres à la réservation désirée. Le bouton de suppression, lui, supprimera de façon définitive la réservation (attention les passagers de cette réservation resteront eux en mémoire dans la base de données).
+Nous avons ensuite un tableau où l'ensemble des réservations déjà effectuées précédemment apparait. Chaque ligne de ce tableau indique la destination choisie, le numéro de la réservation, si une assurance annulation a été souscrite, un bouton de modification et un de suppression. Le premier renverra vers les mêmes pages que pour une nouvelle réservation, à l'exception qu'elles seront pré-remplies avec les valeurs propres à la réservation désirée. Le bouton de suppression, lui, supprimera de façon définitive la réservation (attention les passagers de cette réservation resteront eux en mémoire dans la base de données).
 
 Les pages dont l'explication suit ne seront visibles que si le bouton "nouvelle réservation" ou un des boutons "modifier" a été enfoncé.
 
 ![Formulaire de réservation: Page 1](images/screen-form-1.png)
 
-Dans la seconde page, trois champs demandent à être complété. Premièrement un nom de destination doit être saisi. Pour le moment toutes les destinations existe, une possibilité d'amélioration serait de restreindre le choix de l'utilisateur à une liste de destinations proposées.
+Dans la seconde page, trois champs demandent à être complété. Premièrement un nom de destination doit être saisi. Pour le moment toutes les destinations existent, une possibilité d'amélioration serait de restreindre le choix de l'utilisateur à une liste de destinations proposées.
 Nous voyons ensuite un champ "assurance annulation". Ce champ va permettre de pouvoir annuler un voyage sans frais. Cette assurance n'est pas par défaut, il faut donc cocher la case pour la demander.
 Il suffit ensuite d'indiquer le nombre de personnes participant au voyage et de passer à l'étape suivante en cliquant sur "suivant".
 
 ![Formulaire de réservation: Page 2](images/screen-form-2.png)
 
 
-La troisième page sert à récolter les informations (nom et âge) propre à chaque passager. Il faut là entrer les informations demandées et cliquer sur "suivant".
+La troisième page sert à récolter les informations (nom et âge) propres à chaque passager. Il faut là entrer les informations demandées et cliquer sur "suivant".
 
 ![Formulaire de réservation: Page 3](images/screen-form-3.png)
 
@@ -57,7 +57,7 @@ La structure de notre code reflète bien le **pattern MVC** que nous avons utili
 
 Toutes les requêtes sont faites vers le fichier `index.php`, qui va démarrer la session et transférer la requête au contrôleur.
 
-Le contrôleur, situé dans `controllers/app.php` est une classe contenant une seule méthode d'instance publique: `handle()`. Cette méthode va vérifier la présence, ou non, de certains paramètres envoyé avec la requête pour la dispatcher à une des méthodes internes qui s'occupera de faire les validations nécessaires et d'afficher la page adéquate.
+Le contrôleur, situé dans `controllers/app.php` est une classe contenant une seule méthode d'instance publique: `handle()`. Cette méthode va vérifier la présence, ou non, de certains paramètres envoyés avec la requête pour la dispatcher à une des méthodes internes qui s'occupera de faire les validations nécessaires et d'afficher la page adéquate.
 
 Il est intéressant de noter que quand on affiche une des pages du formulaire, nous vérifions si les données ne sont pas déjà inscrites dans la session à l'aide de ce petit bout de code:
 
@@ -73,16 +73,16 @@ if (isset($_SESSION['trip'])) {
 
 Ceci permet de revenir en arrière dans le formulaire sans devoir remplir à nouveau les données préalablement fournies. Ça permet également de modifier des réservations avec le même formulaire simplement en les chargeant dans la session.
 
-Pour déterminer quelle page afficher, le contrôleur vérifie premièrement la présence ou non de certains paramètres dans la requête `POST`. Ceci fonctionne pour nous puisque nous avons que quelques routes. Néanmoins, cette façon de faire devient très vite très compliqué quand on augmente le nombre de pages. C'est pour cela que de grands projets utilise des Framework qui offrent des capacités de routage. Si nous avions eu plus de routes, il aurait été fort intéressant de prendre le temps créer une abstraction gérant les routes.
+Pour déterminer quelle page afficher, le contrôleur vérifie premièrement la présence de certains paramètres dans la requête `POST`. Ceci fonctionne car nous avons que quelques routes. Néanmoins, cette façon de faire devient très vite très compliqué quand on augmente le nombre de pages. C'est pour cela que de grands projets utilisent des Framework qui offrent des possibilités de routage. Si nous avions eu plus de routes, il aurait été fort intéressant de prendre le temps créer une abstraction gérant les routes.
 
 Quand l'utilisateur appuie sur le bouton **"Nouvelle Réservation"**, le formulaire envoie une requête `POST` à l'`index.php` contenant un paramètre `new`. Quand la méthode `handle` du contrôleur voit la présence de ce paramètre, elle appelle la méthode privée `new` qui va inclure la vue `views/reservation-form-1.php`.
 
-Une fois que l'utilisateur a rempli le formulaire, une nouvelle requête `POST` est envoyé à l'url `index.php`, cette fois-ci avec des paramètres différents. Cette fois-ci, c'est la méthode privée `step_1` qui est appelée. Un nouvel objet `Reservation` est crée si il n'existe pas déjà dans la session. Les champs du formulaire sont validés un par un, ceux qui sont valides sont mis à jour dans le modèle, pour les autres une entrée dans la table `$errors` est ajoutée. Une fois les champs validés, on sauvegarde le modèle mis à jour dans la session et deux possibilités se présentent:
+Une fois que l'utilisateur a rempli le formulaire, une nouvelle requête `POST` est envoyé à l'url `index.php`, cette fois-ci avec des paramètres différents. Ensuite, c'est la méthode privée `step_1` qui est appelée. Un nouvel objet `Reservation` est crée si il n'existe pas déjà dans la session. Les champs du formulaire sont validés un par un, ceux qui sont valides sont mis à jour dans le modèle, pour les autres une entrée dans la table `$errors` est ajoutée. Une fois les champs validés, on sauvegarde le modèle mis à jour dans la session et deux possibilités se présentent:
 
 1. Les champs étaient tous valides. Dans ce cas on avance tout simplement vers la prochaine partie du formulaire.
-2. Un ou plusieurs champs n'étaient pas rempli correctement. Dans ce cas on renvoie vers le formulaire dont on vient en précisant les erreurs pour que la vue puisse afficher des erreurs à l'utilisateur.
+2. Un ou plusieurs champs n'étaient pas rempli correctement. Dans ce cas on renvoie vers le formulaire d'où l'on vient en précisant les erreurs pour que la vue puisse afficher des erreurs à l'utilisateur.
 
-La deuxième page du formulaire fonctionne de la même façon, à la différence près que le nombre de champs dans le formulaire est dynamique en fonction des valeurs précédemment entrées par l'utilisateur.
+La deuxième page du formulaire fonctionne de la même façon, à la différence près que le nombre de champs dans le formulaire est dynamique en fonction du nombre de passagers précédement entré par l'utilisateur.
 
 ### Vues
 
@@ -97,21 +97,21 @@ et finissent avec:
 <?php include 'partials/footer.php'; ?>
 ```
 
-Les morceaux de vues `header.php` et `footer.php` contiennent le code HTML commun entre toutes les vues. Il est toujours important d'éviter de répéter du code inutilement. Par ailleurs, extraire le code commun offre de gros avantages! On réduit le nombre de lignes nécessaires, certes. Mais le grand avantage se divulgue quand nous devons apporter une modification à ce code commun! En effet, si nous respectons le principe *DRY* la modification ne se fera que dans un fichier au lieu de tous les fichiers ou on aurait copié ce code.
+Les morceaux de vues `header.php` et `footer.php` contiennent le code HTML commun entre toutes les vues. Il est toujours important d'éviter de répéter du code inutilement. Par ailleurs, extraire le code commun offre de gros avantages! On réduit le nombre de lignes nécessaires, mais le grand avantage se dévoile quand nous devons apporter une modification à ce code commun! En effet, si nous respectons le principe *DRY* la modification ne se fera que dans un fichier au lieu de tous les fichiers où on aurait copié ce code.
 
-Les vues ont accès au modèle pour afficher des informations à l'utilisateur. Il est fort important que la vue ne **modifie pas** le modèle directement. Toute modification du modèle doit impérativement passer par le contrôleur.
+Les vues ont accès au modèle pour afficher des informations à l'utilisateur. Il est important que la vue ne **modifie pas** le modèle directement. Toute modification du modèle doit impérativement passer par le contrôleur.
 
 
 ### Modèles
 
-Les modèles sont des classes qui servent à représenter et manipuler les données. Ils peuvent fournir toute une pléthore de méthode permettant de les créer, modifier, sauvegarder ou supprimer. Par exemple, ce sont les modèles qui font le raccordement entre la base de données (stockage permanent) et le reste de l'application.
+Les modèles sont des classes qui servent à représenter et manipuler les données. Ils peuvent fournir toute une panoplie de méthodes permettant de créer, modifier, sauvegarder ou supprimer. Par exemple, ce sont les modèles qui font le raccordement entre la base de données et le reste de l'application.
 
-Dans notre application, nous avons seulement deux modèles: `Reservation` et `Passenger`. Le modèle `Passenger` est très minimale, il sert simplement à regrouper ensembles les propriétés d'un passager pour former une abstraction que le modèle `Reservation` va pouvoir utiliser au lieu de gérer les propriétés séparément. Le modèle pour les réservations est déjà plus conséquent, c'est le modèle que le contrôleur va accéder pour stocker et modifier les données. Il est normal alors que le modèle présente des méthodes pour réaliser ces modifications comme il se doit.
+Dans notre application, nous avons seulement deux modèles: `Reservation` et `Passenger`. Le modèle `Passenger` est très minimaliste, il sert simplement à regrouper ensembles les propriétés d'un passager pour former une abstraction que le modèle `Reservation` va pouvoir utiliser au lieu de gérer les propriétés séparément. Le modèle pour les réservations est plus conséquent, c'est le modèle que le contrôleur va utiliser pour stocker et modifier les données. Il est donc normal que le modèle présente des méthodes pour réaliser ces modifications comme il se doit.
 
-La communication avec la base de données ce fait également à partir du modèle `Reservation`. Celui-ci offre des méthodes d'instances, tel que `save`, qui permet d'écrire le modèle dans la base de données, mais également des méthodes de classe, tel que `list_reservations` qui permet de recevoir une liste de réservations présentes dans le système.
+La communication avec la base de données se fait également à partir du modèle `Reservation`. Celui-ci offre des méthodes d'instances, tel que `save`, qui permet d'écrire le modèle dans la base de données, mais également des méthodes de classe, tel que `list_reservations` qui permet de recevoir une liste de réservations présentes dans le système.
 ##### Protections contre les injections SQL
 
-Une injection SQL survient souvent quand l'utilisateur prends astucieusement avantage du fait que son entrée est injecté directement dans le query SQL sans vérifications. Par exemple, imaginons la requête SQL suivante sans aucune vérification de ce que l'utilisateur entre comme nom:
+Une injection SQL survient souvent quand l'utilisateur prends astucieusement avantage du fait que son entrée est injecté directement dans la requête SQL sans vérifications. Par exemple, imaginons la requête SQL suivante sans aucune vérification de ce que l'utilisateur entre comme nom:
 
 ```sql
 SELECT uid FROM Users WHERE name = '(nom)' AND password = '(mot de passe haché)';
@@ -125,7 +125,7 @@ SELECT uid FROM Users WHERE name = 'Dupont'; -- ' AND password = '4e383a1918b432
 
 L'utilisateur peut donc se connecter avec n'importe quel mot de passe.
 
-Pour palier à ce problème, nous utilisons des requêtes préparées qui sont compilé avant l'insertion des paramètres, ce qui les empêche d'être interprété. Par exemple, pour supprimer une réservation, nous avons la requête suivante:
+Pour pallier à ce problème, nous utilisons des requêtes préparées qui sont compilées avant l'insertion des paramètres, ce qui les empêche d'être interprétées. Par exemple, pour supprimer une réservation, nous avons la requête suivante:
 
 ```php
 <?php
@@ -136,7 +136,7 @@ Pour palier à ce problème, nous utilisons des requêtes préparées qui sont c
 ?>
 ```
 
-Ceci évitera qu'un petit malin supprime toutes les réservations dans la base de données.
+Ceci évitera que quelqu'un de mal intensionné ne supprime toutes les réservations dans la base de données.
 
 
 
@@ -153,18 +153,15 @@ Ceci évitera qu'un petit malin supprime toutes les réservations dans la base d
 ##Conclusion
 
 
-
-
-
-Plusieurs choses pourraient être le sujet de modification et de développement. Nous aurions en effet dut mieux commenter notre code par exemple. Celui-ci est en effet plutôt brut sans nécessairement beaucoup de commentaire pour aider à la compréhension. De plus une passe de nettoyage aurait été une bonne idée afin de réduire ou simplifier plusieurs méthodes. Nous avons effectivement modifier, retravailler et tester différentes façons de faire et n'avons pas toujours fait attention à tout simplifier et nettoyer.
+Plusieurs choses pourraient être le sujet de modification et de développement. Nous aurions dut mieux commenter notre code par exemple. Celui-ci est en effet plutôt brut sans nécessairement beaucoup de commentaire pour aider à la compréhension. De plus une passe de nettoyage aurait été une bonne idée afin de réduire ou simplifier plusieurs méthodes. Nous avons effectivement modifié, retravaillé et testé différentes façons de faire et n'avons pas toujours fait attention à tout simplifier et nettoyer.
 
 D'un point de vue fonctionnel, nous n'avons pas choisi d'intégrer plusieurs interfaces. Chez nous tout est visible simplement et rapidement. Nous pouvons donc imaginer que notre site sera plutôt destiné à une agence de voyage où c'est un opérateur qui s'occupe de la réservation et non le voyageur. Pour permettre aux voyageurs de l'utiliser, il faudrait implémenter une interface spéciale où les voyages déjà réservés ne seraient pas accessibles sans mot de passe afin de protéger ces réservations.
 Nous n'avons pas non plus implémenté de routine de calcul de prix. Ceci aurait pourtant été simple, mais n'avons pas eu le temps pour cela.
 
 
-Les raisons pour lesquelles nous n'avons pas fait ces modifications sont simples, manque de temps et consigne par vague. Nous avons en effet reçu en deux semaines un très grand nombre de projets à rendre en un laps de temps assez cours. Difficile donc de pousser chaque projet jusqu'au bout, nous avons préféré rendre plusieurs bons projets plutôt que un excellent et plusieurs médiocres. La seconde raison est que ce site web a été construit pas à pas avec des objectifs finaux qui n’étaient pas tout à fait dans la même optique. Nous avons en effet du modifier un projet existant (faisant le sujet du travail précédent) pour ce site, et le modifier pour qu'il fasse l'affaire. La bonne solution qu'il aurait fallu faire aurait été de tout recommencer à zéro en s'inspirant du travail déjà fourni et non le modifier. Bien sûr cela aurait demandé un temps et des efforts supplémentaires que nous n'avions pas le luxe d'avoir.
+Les raisons pour lesquelles nous n'avons pas fait ces modifications sont simples, manque de temps et consigne par vague. Nous avons en effet reçu en deux semaines un très grand nombre de projets à rendre en un laps de temps assez cours. Difficile donc de pousser chaque projet jusqu'au bout, nous avons préféré rendre plusieurs bons projets plutôt que un excellent et plusieurs médiocres. La seconde raison est que ce site web a été construit pas à pas avec des objectifs finaux qui n’étaient pas tout à fait dans la même optique. Nous avons en effet du reprendre un projet existant (faisant le sujet du travail précédent) pour ce site, et le modifier pour qu'il fasse l'affaire. La bonne solution aurait été de tout recommencer à zéro en s'inspirant du travail déjà fourni et non le modifier. Bien sûr cela aurait demandé un temps et des efforts supplémentaires que nous n'avions pas le luxe d'avoir.
 
-Nous mettons donc en avant par ce projet qu'il faut toujours bien déterminé les attentes envers le produit final avant de commencer sa conception et se limiter à ce qui avait été décidé sans changer en cours de route d'avis sur ce que le résultat final doit faire.
+Nous mettons donc en avant par ce projet qu'il faut toujours bien déterminer les attentes d'un client envers le produit final avant de commencer sa conception et se limiter à ce qui a été décidé sans changer en cours de route d'avis sur ce que le résultat final doit faire.
 
 
 ## Code
