@@ -2,8 +2,6 @@
 
 ## Introduction
 
-*Ici on introduit notre projet en disant ce que ça fait. On met les screenshot du fonctionnement normal du programme. On ne détaille pas le fonctionnement interne, uniquement ce que l'utilisateur verrait.*
-
 Notre application de réservation en ligne a été pensée et structurée de la façon la plus agréable et simple d'utilisation possible selon nous. Faisons le tour des différentes pages afin d'en expliquer l'utilisation.
 
 ![Page d'accueil](images/screen-index.png)
@@ -54,7 +52,9 @@ La structure de notre code reflète bien le **pattern MVC** que nous avons utili
     └── reservation-form-validated.php
 ```
 
-Toutes les requêtes sont faites vers le fichier `index.php`, qui va démarrer la session et lancer le controlleur pour qu'il gère la requête.
+### Controlleur
+
+Toutes les requêtes sont faites vers le fichier `index.php`, qui va démarrer la session et transférer la requête au controlleur.
 
 Le controleur, situé dans `controllers/app.php` est une classe contenant une seule methode d'instance publique: `handle()`. Cette méthode va vérifier la présence, ou non, de certains paramètres envoyé avec la requête pour la dispatcher à une des méthodes internes qui s'occupera de faire les validations nécéssaires et d'afficher la page adéquate.
 
@@ -65,10 +65,83 @@ Il est intéréssent de noter que quand on affiche une des pages du formulaire, 
 if (isset($_SESSION['trip'])) {
     $trip = unserialize($_SESSION['trip']);
 } else {
-    $trip = null;
+    $trip = new Reservation();
 }
 ?>
 ```
+
+Ceci permet de revenir en arrière dans le formulaire sans devoir reremplir les données préaablement fournies. Ça permet également de modifier des réservation avec le même formulaire simplement en les chargant dans la session.
+
+Pour déterminer quelle page afficher, le controleur vérifie premièrement la présence ou non de certains paramètres dans la requête `POST`. Ceci fonctionne pour nous puisque nous avons que quelques routes. Néanmoins, cette façon de faire devient très vite très compliqué quand on augmente le nombre de pages. C'est pour cela que de grand projets utilise des frameworks qui offrent des capacités de routage. Si nous avions eu plus de routes, il aurait été fort intéressant de prendre le temps créer une abstraction gérant les routes.
+
+Quand l'utilisateur appuye sur le bouton **"Nouvelle Réservation"**, le formulaire envoie une requête `POST` à l'`index.php` contenant un paramètre `new`. Quand la méthode `handle` du controleur voit la présence de ce paramètre, elle appelle la méthode privée `new` qui va inclure la vue `views/reservation-form-1.php`.
+
+Une fois que l'utilisateur a rempli le formulaire, une nouvelle requète `POST` est envoyé à l'url `index.php`, cette fois-ci avec des paramètres différents. Cette fois-ci, c'est la méthode privée `step_1` qui est appelée. Un nouvel objet `Reservation` est crée si il n'existe pas déjà dans la session. Les champs du formulaire sont validés un par un, ceux qui sont valides sont mis à jour dans le modèle, pour les autres une entrée dans la table `$errors` est ajoutée. Une fois les champs validés, on sauvegarde le modèle mis à jour dans la session et deux possibilités se présentent:
+
+1. Les champs étaient tous valides. Dans ce cas on avance tout simplement vers la prochaine partie du formulaire.
+2. Un ou plusieurs champs n'étaient pas rempli correctement. Dans ce cas on renvoie vers le formulaire dont on vient en précisant les erreurs pour que la vue puisse afficher des erreurs à l'utilisateur.
+
+La deuxième page du formulaire fonctionne de la même façon, à la différence près que le nombres de champs dans le formulaire est dynamique en fonction des valeurs précédemment entrées par l'utilisateur.
+
+### Vues
+
+Les vues sont des fichiers contenant majoritairement du code HTML augmenté par un peu de PHP pour afficher des informations dynamiques. Toutes les vues commencent par:
+
+```php
+<?php include 'partials/header.php'; ?>
+```
+et finissent avec:
+
+```php
+<?php include 'partials/footer.php'; ?>
+```
+
+Les morceaux de vues `header.php` et `footer.php` contiennent le code HTML commun entre toutes les vues. Il est toujours important d'évitter de répéter du code inutilement. Par ailleurs, extraire le code commun offre de gros avantages! On réduit le nombres de lignes nécessaires, certes. Mais le grand avantage se divulgue quand nous devons apporter une modification à ce code commun! En effet, si nous respectons le principe *DRY* la modification ne se fera que dans un fichier au lieau de tous les fichiers ou on aurait copié ce code.
+
+Les vues ont accès au modèle pour afficher des informations à l'utilisateur. Il est fort important que la vue ne **modifie pas** le modèle directement. Toute modification du modèle doit impérativement passer par le controleur.
+
+
+### Modèles
+
+Les modèles sont des classes qui servent à représenter et manipuler les données. Ils peuvent fournir toute une pléthore de méthode permettant de les créer, modifier, sauvarger ou supprimer. Par exemple, ce sont les modèles qui font le raccordement entre la base de données (stockage permanent) et le reste de l'application.
+
+Dans notre application, nous avons seulement deux modèles: `Reservation` et `Passenger`. Le modèle `Passenger` est très minimale, il sert simplement à regrouper ensembles les propriétes d'un passager pour former une abstraction que le modèle `Reservation` va pouvoir utiliser au lieu de gérer les propriétes séparémment. Le modèle pour les réservations est déjà plus conséquent, c'est le modèle que le controlleur va accéder pour stocker et modifier les données. Il est normal alors que le modèle présente des méthodes pour réaliser ces modifications comme il se doit.
+
+La communication avec la base de données ce fait également à partir du modèle `Reservation`. Celui-ci offre des méthodes d'instances, tel que `save`, qui permet d'écrire le modèle dans la base de données, mais également des méthodes de classe, tel que `list_reservations` qui permet de recevoir une liste de réservations présentes dans le système.
+
+##### Protections contre les injections SQL
+
+Une injection SQL survient souvant quand l'utilisateur prends astucieusement avantage du fait que son entrée est injecté directement dans le query SQL sans vérifications. Par exemple, imaginons la requête SQL suivante sans aucune vérifications de ce que l'utilisateur entre comme nom:
+
+```sql
+SELECT uid FROM Users WHERE name = '(nom)' AND password = '(mot de passe hashé)';
+```
+
+Il suffirait alors à l'utilisateur de fournir le nom `Dupont';--` et la requête prendrait une toute autre allure:
+
+```sql
+SELECT uid FROM Users WHERE name = 'Dupont'; -- ' AND password = '4e383a1918b432a9bb7702f086c56596e';
+```
+
+L'utilisateur peut donc se connecter avec n'importe quel mot de passe.
+
+Pour palier à ce problème, nous utilisons des requètes préparées qui sont compilé avant l'insertion des paramètres, ce qui les empèche d'être interprété. Par exemple, pour supprimer une réservation, nous avons la requête suivante:
+
+```php
+<?php
+    $query = $mysqli->prepare('DELETE FROM avengers WHERE id = ?');
+    $query->bind_param('i', $id);
+    $query->execute();
+    $query->close();
+?>
+```
+
+Ceci évitera qu'un petit malin supprimme toutes les réservations dans la base de données.
+
+
+
+
+
 
 
 ## Diagramme de séquence
@@ -102,23 +175,12 @@ class App
         include_once 'models/passenger.php';
         if (isset($_POST['new'])) {
             $this->new();
-        } /*elseif (isset($_POST['old'])) {
-            $this->old();
-        } */elseif (isset($_POST['step_1'])) {
+        } elseif (isset($_POST['step_1'])) {
             $this->step_1();
         } elseif (isset($_POST['step_2'], $_SESSION['trip'])) {
             $this->step_2();
-        } elseif (isset($_POST['destroy']) || isset($_POST['destroy_2'])) {
+        } elseif (isset($_POST['destroy'])) {
             $this->cancel();
-        } elseif (isset($_POST['add'])) {
-            $this->update_P();
-        } elseif (isset($_POST['delete'])) {
-            $this->delete_P();
-        } elseif (isset($_POST['Done'])) {
-            session_destroy();
-            $this->home();
-        } elseif (isset($_POST['Update'])) {
-            $this->update();
         } elseif (isset($_POST['remove'])) {
             $id = $_POST['remove'];
             Reservation::remove($id);
@@ -131,40 +193,13 @@ class App
             $this->home();
         }
     }
-    private function update_P()
-    {
-        $trip = unserialize($_SESSION['trip']);
-
-        $traveller = $_POST['traveller'];
-        $age = $_POST['age'];
-        $reserv_ID = $trip->get_id_travel();
-        $trip->save_Passenger($traveller, $age, $reserv_ID);
-        $this->old();
-        $_SESSION['trip'] = serialize($trip);
-    }
-    private function update()
-    {
-        $trip = unserialize($_SESSION['trip']);
-
-        $new_dest = $_POST['modif'];
-        $trip->set_destination($new_dest);
-        $trip->edit();
-        $this->old();
-    }
-    private function delete_P()
-    {
-        $trip = unserialize($_SESSION['trip']);
-        $id = $_POST['Delete_P'];
-        $trip->del_Passenger($id);
-        $this->old();
-        $_SESSION['trip'] = serialize($trip);
-    }
 
     private function home()
     {
         include 'views/reservation-form-0.php';
     }
-    private function new()
+
+    private function new($errors = null)
     {
         if (isset($_SESSION['trip'])) {
             $trip = unserialize($_SESSION['trip']);
@@ -181,74 +216,94 @@ class App
         $_SESSION['trip'] = serialize($trip);
     }
 
-    private function step_1()
+    private function step_1($errors=null)
     {
-        if (empty($_POST['destination'])) {
-            //raise error
-          ?>
-          <script >
-              alert('Veuillez indiquer une destination.');
-          </script>
-
-          <?php
-          $this->new();
-        } elseif (empty($_POST['places'])) {
-            //raise error
-          ?>
-            <script >
-              alert('Minimum un voyageur requis.');
-            </script >
-
-          <?php
-          $this->new();
-        } elseif ($_POST['places'] <= 0) {
-            //raise error
-          ?>
-            <script>
-              alert('Veuillez entrez un nombre positifs de voyageurs. ');
-            </script>
-          <?php
-          $this->new();
+        // Check if data is already in the session
+        if (isset($_SESSION['trip'])) {
+            $trip = unserialize($_SESSION['trip']);
         } else {
-            if (isset($_SESSION['trip'])) {
-                $trip = unserialize($_SESSION['trip']);
+            $trip = new Reservation();
+        }
+
+        // If the errors variable is non null it means
+        // we came from this form but had an error,
+        // the POST parameters will not be set but
+        // the session will contain an object
+        if (empty($errors)) {
+            $form_errors = array();
+
+            if (empty($_POST['destination'])) {
+                $form_errors['dest_set'] = false;
             } else {
-                $trip = new Reservation();
+                $target = $_POST['destination'];
+                $trip->set_destination($target);
             }
 
-            $target = $_POST['destination'];
-            $places = filter_var($_POST['places'], FILTER_VALIDATE_INT);
-            $insurance = isset($_POST['insurance']) ? (bool) $_POST['insurance'] : false;
+            if (empty($_POST['places'])) {
+                $form_errors['places_set'] = false;
+            } elseif ($_POST['places'] <= 0) {
+                $form_errors['places_pos'] = false;
+            } else {
+                $places = filter_var($_POST['places'], FILTER_VALIDATE_INT);
+                $trip->set_n_passengers($places);
+            }
 
-            $trip->set_destination($target);
-            $trip->set_n_passengers($places);
+            $insurance = isset($_POST['insurance']) ? (bool) $_POST['insurance'] : false;
             $trip->set_cancellation_insurance($insurance);
-            $euromut = $trip->case_insurance();
 
             $_SESSION['trip'] = serialize($trip);
 
-            include 'views/reservation-form-2.php';
+            // If the validation failed
+            if (!empty($form_errors)) {
+                $this->new($form_errors);
+                return;
+            }
         }
+
+        include 'views/reservation-form-2.php';
     }
 
     private function step_2()
     {
+        // At this point there must be a trip object in
+        // session, if not it's a bug...
+        $trip = unserialize($_SESSION['trip']);
+
         $travellers = $_POST['traveller'];
         $ages = $_POST['age'];
-        $trip = unserialize($_SESSION['trip']);
+
+        // Avoid douple passengers caused by add_passenger
         $trip->erase_passengers_DB();
         unset($trip->passengers);
+
+        $form_errors = array();
+
         foreach ($travellers as $i => $traveller) {
-            //location of duplication of passengers !! being created twice
+            if (empty($traveller)) {
+                $form_errors["t".$i] = false;
+            }
+
+            if (empty($ages[$i])) {
+                $form_errors["a".$i] = false;
+            }
+
             $trip->add_passenger(new passenger($traveller, $ages[$i]));
-            $age = $ages[$i];
+            //$age = $ages[$i];
         }
+
+        $_SESSION['trip'] = serialize($trip);
+
+        // If the validation failed
+        if (!empty($form_errors)) {
+            $this->step_1($form_errors);
+            return;
+        }
+
         $id_travel = $trip->get_id_travel();
         $destination = $trip->show_dest();
         $insurance_Bool = $trip->has_insurance();
         $insurance_T = $trip->case_insurance();
         $passengers = $trip->get_passengers();
-        $_SESSION['trip'] = serialize($trip);
         //save() sets all the detail of the reservation into our database 'avengers'
         $trip->save();
         /* As the id of the reservation is set in to save() routine, get_id_travel() needs
@@ -341,18 +396,16 @@ class Reservation
         }
     }
 
-    public function complete()
-    {
-        return false;
-    }
     public function get_passengers()
     {
         return $this->passengers;
     }
+
     public function show_dest()
     {
         return $this->destination;
     }
+
     public function case_insurance()
     {
         if ($this->cancellation_insurance == true) {
@@ -361,14 +414,7 @@ class Reservation
             return 'sans';
         }
     }
-    public function insurance_to_string($case)
-    {
-        if ($case == 1) {
-            return 'avec';
-        } else {
-            return 'sans';
-        }
-    }
+
     public function get_id_travel()
     {
         return $this->id;
@@ -454,8 +500,6 @@ class Reservation
         foreach ($this->passengers as $i => $passenger) {
             //var_dump($passenger->return_id());
             if ($passenger->id == null) {
-                var_dump($this->passengers);
-                echo '<br>';
                 $sqlPerson = "INSERT INTO avengers.peoples(name, age, voyage)
                 VALUES('$passenger->name','$passenger->age','$this->id')";
                 if ($this->mysqli->query($sqlPerson) == true) {
@@ -701,11 +745,11 @@ class Passenger
 ##### views/reservation-form-1.php
 ```php
 <?php
-    // Include the header file that contains
-    // - the opening html tags
-    // - <head> tags with the necessary style and javascript includes
-    // - opening body tag and a bootstrap "container" div
-    include 'partials/header.php';
+// Include the header file that contains
+// - the opening html tags
+// - <head> tags with the necessary style and javascript includes
+// - opening body tag and a bootstrap "container" div
+include 'partials/header.php';
 ?>
 
 <div id="step-1">
@@ -726,67 +770,107 @@ class Passenger
 
     <form method="post" action="index.php">
 
+        <?php
+        $ds = isset($errors["dest_set"])? $errors["dest_set"] : true;
+        $ps = isset($errors["places_set"])? $errors["places_set"] : true;
+        $pp = isset($errors["places_pos"])? $errors["places_pos"] : true;
+        ?>
+
         <div class="row">
-            <div class="form-group col-md-6">
-                <label for="destination">Destination</label>
-                <input type="text" id="destination" name="destination"  class="form-control"
+            <div class="form-group col-md-6
+            <?php if (!$ds) { echo 'has-warning'; } ?>
+            ">
+            <label for="destination">Destination</label>
+            <input type="text" id="destination" name="destination"  class="form-control
+            <?php if (!$ds) { echo 'form-control-warning'; } ?>
+            "
+            <?php
+            if ($trip != null) {
+                echo 'value="'.$trip->get_destination().'"';
+            }?>/>
+            <?php
+            if (!$ds) {
+                ?>
+                <div class="form-control-feedback">Veuillez fournir une destionation.</div>
                 <?php
-                   if ($trip != null) {
-                       echo 'value="'.$trip->get_destination().'"';
-                   }?>/>
-            </div>
-
-            <div class="form-group col-md-6">
-                <label for="places">Nombre de places</label>
-                <input type="number" min="1" id="places" name="places" class="form-control"
-                <?php if ($trip != null) {
-                       echo 'value="'.$trip->get_n_passengers().'"';
-                   }?>/>
-            </div>
+            }
+            ?>
         </div>
 
+        <div class="form-group col-md-6
+        <?php
+        if (!$ps) { echo 'has-warning'; }
+        elseif(!$pp) { echo 'has-danger'; }
+        ?>
+        ">
+        <label for="places">Nombre de places</label>
+        <input type="number" id="places" name="places" class="form-control
+        <?php
+        if (!$ds) { echo 'form-control-warning'; }
+        elseif(!$pp) { echo 'form-control-danger'; }
+        ?>"
+        <?php
+        if ($trip != null) {
+            echo 'value="'.$trip->get_n_passengers().'"';
+        }
+        ?>/>
+        <?php
+        if (!$ds) {
+            ?>
+            <div class="form-control-feedback">Veuillez fournir un nombre de passagers.</div>
+            <?php
+        } elseif (!$pp) {
+            ?>
+            <div class="form-control-feedback">Le nombre de passagers doit être positif.</div>
+            <?php
+        }
+        ?>
+    </div>
+</div>
 
-        <div class="form-check">
-            <label class="form-check-label">
-                <input type="checkbox" id="insurance" name="insurance" value="valeur" class="form-check-input" <?php if ($trip != null) {
-                       echo 'checked='.$trip->has_insurance();
-                   }?> />
-                Assurance annullation
-            </label>
+
+<div class="form-check">
+    <label class="form-check-label">
+        <input type="checkbox" id="insurance" name="insurance" value="valeur" class="form-check-input"
+        <?php if ($trip != null && $trip->has_insurance()) {
+            echo 'checked';
+        }?> />
+        Assurance annullation
+    </label>
+</div>
+
+
+<button type="submit" class="btn btn-primary" name="step_1">Suivant</button>
+<button name="destroy" class="btn btn-default">Annulation</button>
+
+
+</form>
+
+<div class="stepwizard">
+    <div class="stepwizard-row">
+        <div class="stepwizard-step">
+            <button type="button" class="btn btn-primary btn-circle">1</button>
+            <p>Destination</p>
         </div>
-
-
-        <button type="submit" class="btn btn-primary" name="step_1">Suivant</button>
-        <button name="destroy" class="btn btn-default">Annulation</button>
-
-
-    </form>
-
-    <div class="stepwizard">
-        <div class="stepwizard-row">
-            <div class="stepwizard-step">
-                <button type="button" class="btn btn-primary btn-circle">1</button>
-                <p>Destination</p>
-            </div>
-            <div class="stepwizard-step">
-                <button type="button" class="btn btn-default btn-circle" disabled="disabled">2</button>
-                <p>Détails de réservation</p>
-            </div>
-            <div class="stepwizard-step">
-                <button type="button" class="btn btn-default btn-circle" disabled="disabled">3</button>
-                <p>Confirmation</p>
-            </div>
+        <div class="stepwizard-step">
+            <button type="button" class="btn btn-default btn-circle" disabled="disabled">2</button>
+            <p>Détails de réservation</p>
+        </div>
+        <div class="stepwizard-step">
+            <button type="button" class="btn btn-default btn-circle" disabled="disabled">3</button>
+            <p>Confirmation</p>
         </div>
     </div>
+</div>
 
 
 </div>
 
 <?php
-    // Include the footer file that contains
-    // - javascript includes
-    // - all closing tags corresponding to the opening tags in the header
-    include 'partials/footer.php';
+// Include the footer file that contains
+// - javascript includes
+// - all closing tags corresponding to the opening tags in the header
+include 'partials/footer.php';
 ?>
 ```
 
@@ -837,24 +921,34 @@ class Passenger
           <?php
           //creating a dictionnary people
           $people = array(); //doesn't work
-          for ($i = 0; $i < (int) $_POST['places']; ++$i) {
+          for ($i = 0; $i < (int) $trip->get_n_passengers(); ++$i) {
+
+              $ts = isset($errors["t".$i])? $errors["t".$i] : true;
+              $as = isset($errors["a".$i])? $errors["a".$i] : true;
               ?>
 
               <div class="col-md-4 passenger">
 
                   <h5>Voyageur #<?php echo $i + 1; ?> </h4>
-                  <div class="form-group">
+                  <div class="form-group
+                  <?php if (!$ts) { echo 'has-warning'; } ?>
+                  ">
                       <label for="traveller">Nom</label>
-                      <input name="traveller[]" type="text" placeholder="Voyageur" class="form-control"
+                      <input name="traveller[]" type="text" placeholder="Voyageur" class="form-control
+                      <?php if (!$ts) { echo 'form-control-warning'; } ?>"
                       <?php
                         if (array_key_exists($i, $trip->passengers)) {
                             echo 'value="'.$trip->passengers[$i]->name.'"';
                         } ?>
                       />
                   </div>
-                  <div class="form-group">
+                  <div class="form-group
+                  <?php if (!$as) { echo 'has-warning'; } ?>
+                  ">
                       <label for="age">Age</label>
-                      <input name="age[]" type="text" placeholder="Age" class="form-control"
+                      <input name="age[]" type="text" placeholder="Age" class="form-control
+                      <?php if (!$ts) { echo 'form-control-warning'; } ?>"
+                      "
                       <?php  if (array_key_exists($i, $trip->passengers)) {
                             echo 'value="'.$trip->passengers[$i]->age.'"';
                         } ?>/>
@@ -868,7 +962,7 @@ class Passenger
           <div class="row">
               <div class="form-group col-md-12">
                   <button name="step_2" class="btn btn-primary" name = "Submit">Suivant</button>
-                  <button name="destroy_2" class="btn btn-default">Annulation</button>
+                  <button name="destroy" class="btn btn-default">Annulation</button>
               </div>
           </div>
       </form>
@@ -892,9 +986,9 @@ class Passenger
 
 </div>
 
-  <?php
+<?php
   include 'partials/footer.php';
-  ?>
+?>
 ```
 
 ##### views/reservation-form-validated.php
@@ -913,7 +1007,7 @@ class Passenger
 
     <div class="jumbotron">
         <p>
-            Voici une récapitulation de vôtre réservation.<br>
+            Voici une récapitulation de votre réservation.<br>
             Veuillez vérifier que les informations soient correctes avant de confirmer.
         <p>
 
@@ -966,8 +1060,8 @@ class Passenger
 
     <div class="row">
         <form method="post" action="index.php" class="col-md-12">
-            <button name="destroy_3" class="btn btn-primary btn-lg">Confirmer</button>
-            <button name="destroy_3" class="btn btn-default btn-lg">Anuller</button>
+            <button name="destroy" class="btn btn-primary btn-lg">Confirmer</button>
+            <button name="destroy" class="btn btn-default btn-lg">Anuller</button>
         </form>
     </div>
 

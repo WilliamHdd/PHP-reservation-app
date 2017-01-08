@@ -43,24 +43,34 @@
           <?php
           //creating a dictionnary people
           $people = array(); //doesn't work
-          for ($i = 0; $i < (int) $_POST['places']; ++$i) {
+          for ($i = 0; $i < (int) $trip->get_n_passengers(); ++$i) {
+
+              $ts = isset($errors["t".$i])? $errors["t".$i] : true;
+              $as = isset($errors["a".$i])? $errors["a".$i] : true;
               ?>
 
               <div class="col-md-4 passenger">
 
                   <h5>Voyageur #<?php echo $i + 1; ?> </h4>
-                  <div class="form-group">
+                  <div class="form-group
+                  <?php if (!$ts) { echo 'has-warning'; } ?>
+                  ">
                       <label for="traveller">Nom</label>
-                      <input name="traveller[]" type="text" placeholder="Voyageur" class="form-control"
+                      <input name="traveller[]" type="text" placeholder="Voyageur" class="form-control
+                      <?php if (!$ts) { echo 'form-control-warning'; } ?>"
                       <?php
                         if (array_key_exists($i, $trip->passengers)) {
                             echo 'value="'.$trip->passengers[$i]->name.'"';
                         } ?>
                       />
                   </div>
-                  <div class="form-group">
+                  <div class="form-group
+                  <?php if (!$as) { echo 'has-warning'; } ?>
+                  ">
                       <label for="age">Age</label>
-                      <input name="age[]" type="text" placeholder="Age" class="form-control"
+                      <input name="age[]" type="text" placeholder="Age" class="form-control
+                      <?php if (!$ts) { echo 'form-control-warning'; } ?>"
+                      "
                       <?php  if (array_key_exists($i, $trip->passengers)) {
                             echo 'value="'.$trip->passengers[$i]->age.'"';
                         } ?>/>
@@ -74,7 +84,7 @@
           <div class="row">
               <div class="form-group col-md-12">
                   <button name="step_2" class="btn btn-primary" name = "Submit">Suivant</button>
-                  <button name="destroy_2" class="btn btn-default">Annulation</button>
+                  <button name="destroy" class="btn btn-default">Annulation</button>
               </div>
           </div>
       </form>

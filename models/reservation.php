@@ -71,18 +71,16 @@ class Reservation
         }
     }
 
-    public function complete()
-    {
-        return false;
-    }
     public function get_passengers()
     {
         return $this->passengers;
     }
+
     public function show_dest()
     {
         return $this->destination;
     }
+
     public function case_insurance()
     {
         if ($this->cancellation_insurance == true) {
@@ -91,14 +89,7 @@ class Reservation
             return 'sans';
         }
     }
-    public function insurance_to_string($case)
-    {
-        if ($case == 1) {
-            return 'avec';
-        } else {
-            return 'sans';
-        }
-    }
+
     public function get_id_travel()
     {
         return $this->id;

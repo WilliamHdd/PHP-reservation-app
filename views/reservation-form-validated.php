@@ -65,8 +65,8 @@
 
     <div class="row">
         <form method="post" action="index.php" class="col-md-12">
-            <button name="destroy_3" class="btn btn-primary btn-lg">Confirmer</button>
-            <button name="destroy_3" class="btn btn-default btn-lg">Anuller</button>
+            <button name="destroy" class="btn btn-primary btn-lg">Confirmer</button>
+            <button name="destroy" class="btn btn-default btn-lg">Anuller</button>
         </form>
     </div>
 
